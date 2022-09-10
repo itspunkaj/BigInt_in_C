@@ -51,8 +51,8 @@ void print_BigInt(BigInt b) {
     printf("%c", b->sign == 1 ? '+' : '-');
     
     int i = b->len - 1;
-    while (i > 0 && b->d[i] == 0)
-        i--;
+    while (i > 0 && b->d[i--] == 0);
+    
     printf("%llu", b->d[i--]);
     
     for (; i >= 0; i--)
