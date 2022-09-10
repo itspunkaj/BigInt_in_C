@@ -145,6 +145,8 @@ int main() {
 
     print_BigInt(x);
 
+    print_BigInt(x);
+
     printf("%d\n", x->len);
 
     return 0;
