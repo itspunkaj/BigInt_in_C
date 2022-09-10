@@ -129,6 +129,7 @@ void Increment(const BigInt a, const BigInt delta) {
 }
 
 
+
 int main() {
     BigInt x = new_BigInt(1);
     set_zero(x);
@@ -154,6 +155,8 @@ int main() {
     BigInt z = Multiply(x, y);
 
     print_BigInt(z);
+
+    print_BigInt(x);
 
     printf("%d\n", x->len);
 
