@@ -107,8 +107,8 @@ void _MUL_(llu x, llu y, llu *carry, llu *result) {
     llu x0 = x % HALFBASE,
         x1 = x / HALFBASE,
         y0 = y % HALFBASE,
-        y1 = y / HALFBASE;
-    llu excess = x1 * y0 + x0 * y1;
+        y1 = y / HALFBASE,
+        excess = x1 * y0 + x0 * y1;
     
     // Note the += here, to add to the previous value; Also note that the previous carry is added to this because carry will be reset to new carry
     *result += x0 * y0 + (excess % HALFBASE) * HALFBASE + (*carry);
