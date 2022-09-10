@@ -46,7 +46,7 @@ void free_BigInt(BigInt b) {
 
 
 void print_BigInt(BigInt b) {
-    printf("%c%0llu", b->sign == 1 ? '+' : '-', b->d[b->len - 1]);
+    printf("%c%llu", b->sign == 1 ? '+' : '-', b->d[b->len - 1]);
     for (int i = b->len - 2; i >= 0; i--)
         printf("%018llu", b->d[i]);
     printf("\n");
@@ -137,12 +137,23 @@ int main() {
     set_zero(val);
     val->d[0] = -1 + BASE;
 
-    for (int i = 0; i < 100000000; i++) {
+    for (int i = 0; i < 873493; i++) {
         // print_BigInt(x);
         Increment(x, val);
     }
+    BigInt y = new_BigInt(1);
+    set_zero(y);
+    for (int i = 0; i < 345493; i++) {
+        // print_BigInt(y);
+        Increment(y, val);
+    }
 
     print_BigInt(x);
+    print_BigInt(y);
+
+    BigInt z = Multiply(x, y);
+
+    print_BigInt(z);
 
     printf("%d\n", x->len);
 
