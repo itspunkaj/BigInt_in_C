@@ -4,6 +4,7 @@
 
 
 #define BASE 1000000000000000000ULL;      // 1e18
+#define HALFBASE 1000000000ULL
 
 
 struct BigIntStruct {
@@ -15,6 +16,7 @@ struct BigIntStruct {
 
 typedef struct BigIntStruct* BigInt;
 typedef struct BigIntStruct BigIntObj;
+typedef unsigned long long llu;
 
 
 BigInt new_BigInt(const unsigned int length) {
@@ -61,7 +63,7 @@ void increase_size(BigInt b, const unsigned int delta_len) {
 }
 
 
-void increase_size(BigInt b) {
+void increase_size1(BigInt b) {
     increase_size(b, b->len);
 }
 
@@ -95,15 +97,25 @@ BigInt Subtract(const BigInt a, const BigInt b) {
 }
 
 
+void _MUL_(llu x, llu y, llu *carry, llu *val)
+{
+    llu x0 = x % HALFBASE, x1 = x / HALFBASE, y0 = y % HALFBASE, y1 = y / HALFBASE;
+    llu excess = x1 * y0 + x0 * y1;
+    *val = x0 * y0 + (excess % HALFBASE) * HALFBASE;
+    *carry = x1 * y1 + excess / HALFBASE + (*val) / BASE;
+    *val %= BASE;
+}
+
 BigInt Multiply(const BigInt a, const BigInt b) {
     BigInt c = new_BigInt(a->len + b->len);
     set_zero(c);
     for (unsigned int i = 0; i < a->len; i++) {
         unsigned long long carry = 0;
         for (unsigned int j = 0; j < b->len; j++) {
-            c->d[i + j] += a->d[i] * b->d[j] + carry;
-            carry = c->d[i + j] / BASE;
-            c->d[i + j] %= BASE;
+            _MUL_(a->d[i], b->d[j], &carry, &(c->d[i + j]));
+            // c->d[i + j] += a->d[i] * b->d[j] + carry;
+            // carry = c->d[i + j] / BASE;
+            // c->d[i + j] %= BASE;
         }
         c->d[i + b->len] = carry;
     }
@@ -130,35 +142,31 @@ void Increment(const BigInt a, const BigInt delta) {
 
 
 
+
 int main() {
-    BigInt x = new_BigInt(1);
+    BigInt x = new_BigInt(2);
     set_zero(x);
 
-    BigInt val = new_BigInt(1);
-    set_zero(val);
-    val->d[0] = -1 + BASE;
-
-    for (int i = 0; i < 873493; i++) {
-        // print_BigInt(x);
-        Increment(x, val);
-    }
-    BigInt y = new_BigInt(1);
+    BigInt y = new_BigInt(2);
     set_zero(y);
-    for (int i = 0; i < 345493; i++) {
-        // print_BigInt(y);
-        Increment(y, val);
-    }
+
+    x->d[0] = 546456456;
+    x->d[1] = 584564;
+
+
+    y->d[0] = 89437878354;
+    y->d[1] = 879274;
+
+
 
     print_BigInt(x);
     print_BigInt(y);
 
-    BigInt z = Multiply(x, y);
+    // printf("%d\n", x->len);
 
-    print_BigInt(z);
-
-    print_BigInt(x);
-
-    printf("%d\n", x->len);
+    BigInt mul=Add(x,y);
+    print_BigInt(mul);
+    // printf("%d \n",mul->len);
 
     return 0;
 }
