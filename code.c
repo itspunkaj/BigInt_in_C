@@ -23,7 +23,7 @@ BigInt new_BigInt(const unsigned int length) {
     BigInt b = (BigInt) malloc(sizeof(BigIntObj));
     b->sign = 1;
     b->len = length;
-    b->d = (unsigned long long*) malloc(length * sizeof(unsigned long long));
+    b->d = (llu*) malloc(length * sizeof(llu));
     return b;
 }
 
@@ -56,22 +56,22 @@ void print_BigInt(BigInt b) {
 
 
 void increase_size(BigInt b, const unsigned int delta_len) {
-    b->d = (unsigned long long*) realloc(b->d, sizeof(unsigned long long) * (b->len + delta_len));
+    b->d = (llu*) realloc(b->d, sizeof(llu) * (b->len + delta_len));
     b->len += delta_len;
     for (int i = b->len - delta_len; i < b->len; i++)
         b->d[i] = 0;
 }
 
 
-void increase_size1(BigInt b) {
-    increase_size(b, b->len);
-}
+// void increase_size1(BigInt b) {
+//     increase_size(b, b->len);
+// }
 
 
 BigInt Add(const BigInt a, const BigInt b) {
     BigInt c = new_BigInt(1 + max(a->len, b->len));
     set_zero(c);
-    unsigned long long carry = 0;
+    llu carry = 0;
     for (unsigned int i = 0; i < c->len - 1; i++) {
         c->d[i] = a->d[i] + b->d[i] + carry;
         carry = c->d[i] / BASE;
@@ -87,7 +87,7 @@ BigInt Add(const BigInt a, const BigInt b) {
 BigInt Subtract(const BigInt a, const BigInt b) {
     BigInt c = new_BigInt(max(a->len, b->len));
     set_zero(c);
-    unsigned long long carry = 0;
+    llu carry = 0;
     for (unsigned int i = 0; i < c->len; i++) {
         c->d[i] = a->d[i] - b->d[i] - carry;
         carry = c->d[i] / BASE;
@@ -97,20 +97,34 @@ BigInt Subtract(const BigInt a, const BigInt b) {
 }
 
 
-void _MUL_(llu x, llu y, llu *carry, llu *val)
-{
-    llu x0 = x % HALFBASE, x1 = x / HALFBASE, y0 = y % HALFBASE, y1 = y / HALFBASE;
+void _MUL_(llu x, llu y, llu *carry, llu *result) {
+    /*
+    Multiplies x and y, and stores the product in result, and excess value in carry.
+    The value stored in carry is added to result before multiplication.
+    The value stored in result is incremented, not overwritten.
+    */
+    
+    llu x0 = x % HALFBASE,
+        x1 = x / HALFBASE,
+        y0 = y % HALFBASE,
+        y1 = y / HALFBASE;
     llu excess = x1 * y0 + x0 * y1;
-    *val = x0 * y0 + (excess % HALFBASE) * HALFBASE;
-    *carry = x1 * y1 + excess / HALFBASE + (*val) / BASE;
-    *val %= BASE;
+    
+    // Note the += here, to add to the previous value; Also note that the previous carry is added to this because carry will be reset to new carry
+    *result += x0 * y0 + (excess % HALFBASE) * HALFBASE + (*carry);
+    
+    // No += here because carry will be recalculated
+    *carry = x1 * y1 + excess / HALFBASE + (*result) / BASE;
+    
+    *result %= BASE;
 }
 
 BigInt Multiply(const BigInt a, const BigInt b) {
     BigInt c = new_BigInt(a->len + b->len);
+    llu carry;
     set_zero(c);
     for (unsigned int i = 0; i < a->len; i++) {
-        unsigned long long carry = 0;
+        carry = 0;
         for (unsigned int j = 0; j < b->len; j++) {
             _MUL_(a->d[i], b->d[j], &carry, &(c->d[i + j]));
             // c->d[i + j] += a->d[i] * b->d[j] + carry;
@@ -127,7 +141,7 @@ void Increment(const BigInt a, const BigInt delta) {
     if (a->len <= delta->len) {
         increase_size(a, delta->len - a->len + 1);
     }
-    unsigned long long carry = 0;
+    llu carry = 0;
     for (unsigned int i = 0; i < delta->len; i++) {
         a->d[i] += delta->d[i] + carry;
         carry = a->d[i] / BASE;
@@ -154,17 +168,17 @@ int main() {
     x->d[1] = 584564;
 
 
-    y->d[0] = 89437878354;
+    y->d[0] = 89437878354ULL;
     y->d[1] = 879274;
 
-
+    
 
     print_BigInt(x);
     print_BigInt(y);
 
     // printf("%d\n", x->len);
 
-    BigInt mul=Add(x,y);
+    BigInt mul=Multiply(x,y);
     print_BigInt(mul);
     // printf("%d \n",mul->len);
 
