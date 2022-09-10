@@ -48,9 +48,16 @@ void free_BigInt(BigInt b) {
 
 
 void print_BigInt(BigInt b) {
-    printf("%c%llu", b->sign == 1 ? '+' : '-', b->d[b->len - 1]);
-    for (int i = b->len - 2; i >= 0; i--)
+    printf("%c", b->sign == 1 ? '+' : '-');
+    
+    int i = b->len - 1;
+    while (i > 0 && b->d[i] == 0)
+        i--;
+    printf("%llu", b->d[i--]);
+    
+    for (; i >= 0; i--)
         printf("%018llu", b->d[i]);
+
     printf("\n");
 }
 
@@ -127,6 +134,7 @@ BigInt Multiply(const BigInt a, const BigInt b) {
         carry = 0;
         for (unsigned int j = 0; j < b->len; j++) {
             _MUL_(a->d[i], b->d[j], &carry, &(c->d[i + j]));
+            // _MUL_ exactly does the below 3 operations without overflow
             // c->d[i + j] += a->d[i] * b->d[j] + carry;
             // carry = c->d[i + j] / BASE;
             // c->d[i + j] %= BASE;
@@ -178,9 +186,20 @@ int main() {
 
     // printf("%d\n", x->len);
 
-    BigInt mul=Multiply(x,y);
+    BigInt mul = Multiply(x, y);
     print_BigInt(mul);
-    // printf("%d \n",mul->len);
+
+
+    BigInt mul_power2 = Multiply(mul, mul);
+
+    BigInt mul_power4 = Multiply(mul_power2, mul_power2);
+
+    BigInt mul_power8 = Multiply(mul_power4, mul_power4);
+
+    BigInt mul_power16 = Multiply(mul_power8, mul_power8);
+
+    print_BigInt(mul_power16);
+    
 
     return 0;
 }
