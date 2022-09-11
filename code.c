@@ -50,13 +50,13 @@ void free_BigInt(BigInt b) {
 void print_BigInt(BigInt b) {
     printf("%c", b->sign == 1 ? '+' : '-');
     
-    int i = b->len - 1;
-    while (i > 0 && b->d[i--] == 0);
+    int i = b->len;
+    while (--i > 0 && b->d[i] == 0);
     
     printf("%llu", b->d[i--]);
     
-    for (; i >= 0; i--)
-        printf("%018llu", b->d[i]);
+    while (i >= 0)
+        printf("%018llu", b->d[i--]);
 
     printf("\n");
 }
