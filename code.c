@@ -163,42 +163,98 @@ void Increment(const BigInt a, const BigInt delta) {
 }
 
 
+BigInt take_input() // function to take input from user by string
+{
+    char *arr;
+    arr = (char *)malloc(2 * sizeof(char));
+    int count = 0;
+    int szalloc = 2;
+    char c = ' ';
+    int sgn=1;
+    while (c != '\n')
+    {
+        if (count == szalloc - 1)
+        {
 
+            arr = realloc(arr, 2 * szalloc);
+            szalloc *= 2;
+        }
+        
+        scanf("%c", &c);
+        if(count==0)
+        {
+            if(c=='+' || c=='-')
+            {
+                if(c=='-')
+                {
+                    sgn=0;
+                }
+                continue;
+            }
+        }
+        arr[count] = c;
+
+        count++;
+    }
+    
+    
+    
+    int lenreq=count/18;
+    if(count%18!=0)
+    {
+        lenreq++;
+    }
+    BigInt x=new_BigInt(lenreq);
+    set_zero(x);
+    int j=0;
+    while(count!=0)
+    {
+        llu tmp=0;
+        if(count<18)
+        {
+            for(int i=0;i<count-1;i++)
+            {
+                tmp=10*tmp+(arr[i]-'0');
+                // printf("%d ",arr[i]-'0');
+            }
+            x->d[j]=tmp;
+            j++;
+            count=0;
+            // printf("\ntmp %d \n",arr[3]-'0');
+        }
+        else
+        {
+            for(int i=count-18;i<count-1;i++)
+            {
+                tmp=10*tmp+(arr[i]-'0');
+            }
+            count-=18;
+            x->d[j]=tmp;
+            j++;
+        }
+    }
+    x->sign=sgn;
+    return x;
+}
 
 int main() {
-    BigInt x = new_BigInt(2);
-    set_zero(x);
+    printf("Enter two number for multiplication\n");
+    BigInt y=take_input();
+    // print_BigInt(y);
+    BigInt z=take_input();
+    // print_BigInt(z);
 
-    BigInt y = new_BigInt(2);
-    set_zero(y);
+    BigInt ans=Multiply(y,z);
+    printf("Your answer after multiplication is \n");
+    print_BigInt(ans);
 
-    x->d[0] = 546456456;
-    x->d[1] = 584564;
-
-
-    y->d[0] = 89437878354ULL;
-    y->d[1] = 879274;
-
-    
-
-    print_BigInt(x);
-    print_BigInt(y);
 
     // printf("%d\n", x->len);
 
-    BigInt mul = Multiply(x, y);
-    print_BigInt(mul);
+    ;
 
 
-    BigInt mul_power2 = Multiply(mul, mul);
-
-    BigInt mul_power4 = Multiply(mul_power2, mul_power2);
-
-    BigInt mul_power8 = Multiply(mul_power4, mul_power4);
-
-    BigInt mul_power16 = Multiply(mul_power8, mul_power8);
-
-    print_BigInt(mul_power16);
+    
     
 
     return 0;
