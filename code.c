@@ -180,7 +180,7 @@ BigInt take_input() // function to take input from user by string
         if (count == szalloc - 1)
         {
 
-            arr = realloc(arr, 2 * szalloc);
+            arr = (char *)realloc(arr, 2 * szalloc * sizeof(char));
             szalloc *= 2;
         }
         
@@ -228,7 +228,7 @@ BigInt take_input() // function to take input from user by string
         }
         else
         {
-            for(int i=count-18;i<count-1;i++)
+            for(int i=count-19;i<count-1;i++)
             {
                 tmp=10*tmp+(arr[i]-'0');
             }
@@ -244,9 +244,9 @@ BigInt take_input() // function to take input from user by string
 int main() {
     printf("Enter two number for multiplication\n");
     BigInt y=take_input();
-    // print_BigInt(y);
+    print_BigInt(y);
     BigInt z=take_input();
-    // print_BigInt(z);
+    print_BigInt(z);
 
     BigInt ans=Multiply(y,z);
     printf("Your answer after multiplication is \n");
