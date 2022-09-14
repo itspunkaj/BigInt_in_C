@@ -128,6 +128,10 @@ void _MUL_(llu x, llu y, llu *carry, llu *result) {
 
 BigInt Multiply(const BigInt a, const BigInt b) {
     BigInt c = new_BigInt(a->len + b->len);
+    if(a->sign + b->sign==1)
+    {
+        c->sign=0;
+    }
     llu carry;
     set_zero(c);
     for (unsigned int i = 0; i < a->len; i++) {
