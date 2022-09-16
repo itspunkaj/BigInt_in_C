@@ -228,7 +228,7 @@ BigInt take_input() // function to take input from user by string
         }
         else
         {
-            for(int i=count-18;i<count-1;i++)
+            for(int i=count-19;i<count-1;i++)
             {
                 tmp=10*tmp+(arr[i]-'0');
             }
