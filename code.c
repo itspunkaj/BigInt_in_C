@@ -14,9 +14,20 @@ struct BigIntStruct {
 };
 
 
+struct ComplexStruct {
+    long double *real;
+    long double *imag;
+};
+
+
 typedef struct BigIntStruct* BigInt;
 typedef struct BigIntStruct BigIntObj;
+
+typedef struct ComplexStruct* Complex;
+typedef struct ComplexStruct ComplexObj;
+
 typedef unsigned long long llu;
+
 
 
 BigInt new_BigInt(const unsigned int length) {
