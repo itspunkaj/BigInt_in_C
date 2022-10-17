@@ -16,8 +16,8 @@ struct BigIntStruct {
 
 
 struct ComplexStruct {
-    long double *real;
-    long double *imag;
+    long double real;
+    long double imag;
 };
 
 
