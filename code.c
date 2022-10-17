@@ -7,6 +7,7 @@
 #define HALFBASE 1000000000ULL
 
 
+
 struct BigIntStruct {
     short int sign;
     unsigned int len;
