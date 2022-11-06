@@ -295,6 +295,13 @@ BigInt Multiply(const BigInt a, const BigInt b)
 //     BigInt c=Subtract(a,b);
     
 // }
+
+
+BigInt Divide(const BigInt a, const BigInt b, BigInt rem)
+{
+    
+}
+
 void Increment(const BigInt a, const BigInt delta)
 {
     if (a->len <= delta->len)
