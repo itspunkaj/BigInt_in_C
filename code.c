@@ -290,11 +290,27 @@ BigInt Multiply(const BigInt a, const BigInt b)
     return c;
 }
 
-// int compare(const BigInt a, const BigInt b)
-// {
-//     BigInt c=Subtract(a,b);
+int Compare(const BigInt a, const BigInt b)
+{
+    BigInt nv=Subtract(a,b);
+    int flag=0;
+    for(int i=0;i<nv->len;i++)
+    {
+        if(nv->d[i]!=0)
+        {
+            flag=1;
+        }
+    }
+    if(nv->sign==0)
+    {
+        return -1;
+    }
+    else if(nv->sign==1)
+    {
+        return flag;
+    }
     
-// }
+}
 void Increment(const BigInt a, const BigInt delta)
 {
     if (a->len <= delta->len)
@@ -388,6 +404,8 @@ BigInt take_input() // function to take input from user by string
     return x;
 }
 
+
+
 int main()
 {
     // printf("Enter two number for multiplication\n");
@@ -396,9 +414,9 @@ int main()
     BigInt z=take_input();
     print_BigInt(z);
 
-    // printf("\n%d ",Subtract(y,z));
+    printf("%d ",Compare(y,z));
     BigInt c=Subtract(y,z);
-    print_BigInt(c);
+    // print_BigInt(c);
 
     // BigInt ans=Multiply(y,z);
     // printf("Your answer after multiplication is \n");
