@@ -167,9 +167,9 @@ BigInt Add(const BigInt a, const BigInt b)
     llu carry = 0;
     for (unsigned int i = 0; i < c->len - 1; i++)
     {
-        c->d[i] = carry + 
-        (i < a->len ? a->d[i] : 0) + 
-        (i < b->len ? b->d[i] : 0);
+        c->d[i] = carry +
+                  (i < a->len ? a->d[i] : 0) +
+                  (i < b->len ? b->d[i] : 0);
         carry = c->d[i] / BASE;
         c->d[i] %= BASE;
     }
@@ -180,14 +180,18 @@ BigInt Add(const BigInt a, const BigInt b)
     return c;
 }
 
-int isPrime(int n)  {
-    if (n <= 1)  return 0;
-    if (n <= 3)  return 1;
-    if (n%2 == 0 || n%3 == 0) return 0;
-    
-    for (int i=5; i*i<=n; i=i+6)
-        if (n%i == 0 || n%(i+2) == 0)
-               return 0;
+int isPrime(int n)
+{
+    if (n <= 1)
+        return 0;
+    if (n <= 3)
+        return 1;
+    if (n % 2 == 0 || n % 3 == 0)
+        return 0;
+
+    for (int i = 5; i * i <= n; i = i + 6)
+        if (n % i == 0 || n % (i + 2) == 0)
+            return 0;
     return 1;
 }
 
@@ -199,16 +203,16 @@ BigInt Subtract(const BigInt a, const BigInt b)
     ll temp;
     for (unsigned int i = 0; i < c->len - 1; i++)
     {
-        temp = carry + 
-        (i < a->len ? a->d[i] : 0) - 
-        (i < b->len ? b->d[i] : 0);
+        temp = carry +
+               (i < a->len ? a->d[i] : 0) -
+               (i < b->len ? b->d[i] : 0);
 
         if (temp < 0)
         {
             carry = -1;
             c->d[i] = temp + BASE;
         }
-        else 
+        else
         {
             carry = 0;
             c->d[i] = temp;
@@ -225,16 +229,16 @@ BigInt Subtract(const BigInt a, const BigInt b)
         carry = 0;
         for (unsigned int i = 0; i < c->len - 1; i++)
         {
-            temp = carry + 
-            (i < b->len ? b->d[i] : 0) - 
-            (i < a->len ? a->d[i] : 0);
+            temp = carry +
+                   (i < b->len ? b->d[i] : 0) -
+                   (i < a->len ? a->d[i] : 0);
 
             if (temp < 0)
             {
                 carry = -1;
                 c->d[i] = temp + BASE;
             }
-            else 
+            else
             {
                 carry = 0;
                 c->d[i] = temp;
@@ -290,16 +294,57 @@ BigInt Multiply(const BigInt a, const BigInt b)
     return c;
 }
 
-// int compare(const BigInt a, const BigInt b)
-// {
-//     BigInt c=Subtract(a,b);
+int Compare(const BigInt a, const BigInt b)
+{
+    BigInt nv = Subtract(a, b);
+    int flag = 0;
+    for (int i = 0; i < nv->len; i++)
+    {
+        if (nv->d[i] != 0)
+        {
+            flag = 1;
+        }
+    }
+    if (nv->sign == 0)
+    {
+        return -1;
+    }
+    else if (nv->sign == 1)
+    {
+        return flag;
+    }
+}
+
+BigInt Power(BigInt num, llu p)
+{
+    BigInt ans=new_BigInt(1);
+    ans->d[0]=1;
     
+<<<<<<< HEAD
 // }
 
 
 BigInt Divide(const BigInt a, const BigInt b, BigInt rem)
 {
     
+=======
+    BigInt temp;
+    while (p > 0)
+
+    {
+        if (p & 1)
+        {
+            temp=ans;
+            ans =Multiply(ans,num);
+            free_BigInt(temp);
+        }
+        p >>= 1;
+        temp=num;
+        num =Multiply(num,num);
+        free_BigInt(temp);
+    }
+        return ans;
+>>>>>>> 6e1bf078eed5966a5021c94a57482d9c9113f178
 }
 
 void Increment(const BigInt a, const BigInt delta)
@@ -398,13 +443,13 @@ BigInt take_input() // function to take input from user by string
 int main()
 {
     // printf("Enter two number for multiplication\n");
-    BigInt y=take_input();
+    BigInt y = take_input();
     print_BigInt(y);
-    BigInt z=take_input();
-    print_BigInt(z);
+    // BigInt z = take_input();
+    // print_BigInt(z);
 
-    // printf("\n%d ",Subtract(y,z));
-    BigInt c=Subtract(y,z);
+    // printf("%d ", Compare(y, z));
+    BigInt c = Power(y,35000);
     print_BigInt(c);
 
     // BigInt ans=Multiply(y,z);
