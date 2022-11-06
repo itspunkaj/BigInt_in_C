@@ -167,10 +167,9 @@ BigInt Add(const BigInt a, const BigInt b)
     llu carry = 0;
     for (unsigned int i = 0; i < c->len - 1; i++)
     {
-        c->d[i] = 
+        c->d[i] = carry + 
         (i < a->len ? a->d[i] : 0) + 
-        (i < b->len ? b->d[i] : 0) + 
-        carry;
+        (i < b->len ? b->d[i] : 0);
         carry = c->d[i] / BASE;
         c->d[i] %= BASE;
     }
@@ -200,17 +199,14 @@ BigInt Subtract(const BigInt a, const BigInt b)
     ll temp;
     for (unsigned int i = 0; i < c->len - 1; i++)
     {
-        temp = (ll)(carry + a->d[i]) - b->d[i];
-        printf("temp inside for: %ld\n", temp);
-        // c->d[i] = a->d[i] - b->d[i] + carry;
-        // carry = temp / BASE;
-        
-        printf("carry inside for: %ld\n", carry);
+        temp = carry + 
+        (i < a->len ? a->d[i] : 0) - 
+        (i < b->len ? b->d[i] : 0);
+
         if (temp < 0)
         {
             carry = -1;
             c->d[i] = temp + BASE;
-            printf("here: %ld %ld\n", temp, carry);
         }
         else 
         {
@@ -218,7 +214,7 @@ BigInt Subtract(const BigInt a, const BigInt b)
             c->d[i] = temp;
         }
     }
-    printf("carry: %ld\n", carry);
+
     if (carry > 0)
     {
         c->d[c->len - 1] = carry;
@@ -229,17 +225,14 @@ BigInt Subtract(const BigInt a, const BigInt b)
         carry = 0;
         for (unsigned int i = 0; i < c->len - 1; i++)
         {
-            temp = (ll)(carry + b->d[i]) - a->d[i];
-            printf("temp inside for: %ld\n", temp);
-            // c->d[i] = a->d[i] - b->d[i] + carry;
-            // carry = temp / BASE;
-            
-            printf("carry inside for: %ld\n", carry);
+            temp = carry + 
+            (i < b->len ? b->d[i] : 0) - 
+            (i < a->len ? a->d[i] : 0);
+
             if (temp < 0)
             {
                 carry = -1;
                 c->d[i] = temp + BASE;
-                printf("here: %ld %ld\n", temp, carry);
             }
             else 
             {
@@ -404,7 +397,7 @@ int main()
     print_BigInt(z);
 
     // printf("\n%d ",Subtract(y,z));
-    BigInt c=Add(y,z);
+    BigInt c=Subtract(y,z);
     print_BigInt(c);
 
     // BigInt ans=Multiply(y,z);
