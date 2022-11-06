@@ -28,10 +28,10 @@ typedef unsigned long long llu;
 
 Complex new_comp()
 {
-    Complex new;
-    new = (Complex)malloc(sizeof(ComplexObj));
+    Complex temp;
+    temp = (Complex)malloc(sizeof(ComplexObj));
 
-    return new;
+    return temp;
 }
 
 float real_part(Complex a)
