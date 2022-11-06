@@ -159,7 +159,6 @@ void increase_size(BigInt b, const unsigned int delta_len)
 // void increase_size1(BigInt b) {
 //     increase_size(b, b->len);
 // }
-
 BigInt Add(const BigInt a, const BigInt b)
 {
     BigInt c = new_BigInt(1 + max(a->len, b->len));
@@ -248,6 +247,11 @@ BigInt Multiply(const BigInt a, const BigInt b)
     return c;
 }
 
+// int compare(const BigInt a, const BigInt b)
+// {
+//     BigInt c=Subtract(a,b);
+    
+// }
 void Increment(const BigInt a, const BigInt delta)
 {
     if (a->len <= delta->len)
@@ -344,10 +348,14 @@ BigInt take_input() // function to take input from user by string
 int main()
 {
     // printf("Enter two number for multiplication\n");
-    // BigInt y=take_input();
-    // print_BigInt(y);
-    // BigInt z=take_input();
-    // print_BigInt(z);
+    BigInt y=take_input();
+    print_BigInt(y);
+    BigInt z=take_input();
+    print_BigInt(z);
+
+    // printf("\n%d ",Subtract(y,z));
+    BigInt c=Subtract(y,z);
+    print_BigInt(c);
 
     // BigInt ans=Multiply(y,z);
     // printf("Your answer after multiplication is \n");
@@ -357,23 +365,23 @@ int main()
     // long double x1=1.00,x2=2.00,x3.00=4,x4.00=5;
     // scanf("%Lf%Lf%Lf%Lf",&x1,&x2,&x3,&x4);
 
-    n1 = new_comp();
-    n2 = new_comp();
-    (n1->real) = 2;
-    (n2->real) = 4;
+    // n1 = new_comp();
+    // n2 = new_comp();
+    // (n1->real) = 2;
+    // (n2->real) = 4;
 
-    (n1->imag) = 3;
-    (n2->imag) = 7;
+    // (n1->imag) = 3;
+    // (n2->imag) = 7;
 
-    print_Comp(n1);
-    print_Comp(n2);
-    Complex n3 = (Complex)malloc(sizeof(ComplexObj));
-    n3 = divide_complex(n1, n2);
+    // print_Comp(n1);
+    // print_Comp(n2);
+    // Complex n3 = (Complex)malloc(sizeof(ComplexObj));
+    // n3 = divide_complex(n1, n2);
 
-    print_Comp(n3);
-    // print_Comp(modulus(n1));
-    printf("%d\n", modulus(n1));
-    print_Comp(conjugate(n3));
+    // print_Comp(n3);
+    // // print_Comp(modulus(n1));
+    // printf("%d\n", modulus(n1));
+    // print_Comp(conjugate(n3));
 
     // printf("%d\n", x->len);
 
