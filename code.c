@@ -110,9 +110,9 @@ BigInt new_BigInt(const unsigned int length)
 void print_Comp(Complex a)
 {
     if (a->imag >= 0)
-        printf("%f + %fi\n", (a->real), (a->imag));
+        printf("%g + %gi\n", (a->real), (a->imag));
     else
-        printf("%f - %fi\n", (a->real), -(a->imag));
+        printf("%g - %gi\n", (a->real), -(a->imag));
 }
 
 int max(int x, int y)
@@ -359,16 +359,16 @@ int main()
 
     n1 = new_comp();
     n2 = new_comp();
-    (n1->real) = 4;
-    (n2->real) = 5;
+    (n1->real) = 2;
+    (n2->real) = 4;
 
-    (n1->imag) = 6;
+    (n1->imag) = 3;
     (n2->imag) = 7;
 
     print_Comp(n1);
     print_Comp(n2);
     Complex n3 = (Complex)malloc(sizeof(ComplexObj));
-    n3 = divide_complex(n2, n2);
+    n3 = divide_complex(n1, n2);
 
     print_Comp(n3);
     // print_Comp(modulus(n1));
