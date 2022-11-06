@@ -320,14 +320,6 @@ BigInt Power(BigInt num, llu p)
     BigInt ans=new_BigInt(1);
     ans->d[0]=1;
     
-<<<<<<< HEAD
-// }
-
-
-BigInt Divide(const BigInt a, const BigInt b, BigInt rem)
-{
-    
-=======
     BigInt temp;
     while (p > 0)
 
@@ -344,7 +336,6 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt rem)
         free_BigInt(temp);
     }
         return ans;
->>>>>>> 6e1bf078eed5966a5021c94a57482d9c9113f178
 }
 
 void Increment(const BigInt a, const BigInt delta)
