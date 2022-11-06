@@ -25,6 +25,7 @@ typedef struct ComplexStruct *Complex;
 typedef struct ComplexStruct ComplexObj;
 
 typedef unsigned long long llu;
+typedef long long ll;
 
 Complex new_comp()
 {
@@ -190,15 +191,26 @@ int isPrime(int n)  {
 
 BigInt Subtract(const BigInt a, const BigInt b)
 {
-    BigInt c = new_BigInt(max(a->len, b->len));
+    BigInt c = new_BigInt(1 + max(a->len, b->len));
     set_zero(c);
-    llu carry = 0;
-    for (unsigned int i = 0; i < c->len; i++)
+    ll carry = 0;
+    ll temp;
+    for (unsigned int i = 0; i < c->len - 1; i++)
     {
-        c->d[i] = a->d[i] - b->d[i] - carry;
-        carry = c->d[i] / BASE;
-        c->d[i] %= BASE;
+        temp = a->d[i] - b->d[i] + carry;
+        // c->d[i] = a->d[i] - b->d[i] + carry;
+        carry = temp / BASE;
+        if (temp < 0)
+        {
+            c->d[i] = temp + BASE;
+            printf("here: %d %d\n", temp, carry);
+        }
+        else 
+        {
+            c->d[i] = temp % BASE;
+        }
     }
+
     return c;
 }
 
