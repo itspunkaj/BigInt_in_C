@@ -341,38 +341,57 @@ int Compare(const BigInt a, const BigInt b)
     }
 }
 
-// BigInt Divide(const BigInt a, const BigInt b, BigInt* rem)
-// {
-//     BigInt quotient = new_BigInt(1);
-//     set_zero(quotient);
-//     quotient->sign = 1 - a->sign ^ b->sign;
+BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
+{
+    BigInt q = new_BigInt(1);
+    set_zero(q);
+    q->sign = 1 - a->sign ^ b->sign;
 
-//     BigInt remainder = new_BigInt(1);
-//     set_zero(remainder);
+    BigInt r = new_BigInt(1);
+    set_zero(r);
     
-//     BigInt table[10];
-//     table[0] = new_BigInt(1);
-//     set_zero(table[0]);
-//     for (int i = 1; i < 10; i++)
-//     {
-//         table[i] = Add(table[i - 1], b);
-//     }
+    BigInt ten = new_BigInt(1);
+    ten->d[0] = 10;
 
-//     for (int i = a->len - 1; i >= 0; i--)
-//     {
-//         remainder = Multiply(remainder, new_BigInt(BASE));
-//         remainder->d[0] = a->d[i];
-//         int j = 0;
-//         while (Compare(remainder, table[j]) >= 0)
-//         {
-//             j++;
-//         }
-//         j--;
-//         quotient = Multiply(quotient, new_BigInt(BASE));
-//         quotient->d[0] = j;
-//         remainder = Subtract(remainder, table[j]);
-//     }
-// }
+    BigInt table[11];
+    table[0] = new_BigInt(1);
+    set_zero(table[0]);
+
+    for (int i = 1; i <= 10; i++)
+    {
+        table[i] = Add(table[i - 1], b);
+    }
+
+    llu mod;
+    llu cur;
+    int quo;
+
+    for (int i = a->len - 1; i >= 0; i--)
+    {
+        mod = BASE;
+        mod /= 10;
+        while (mod)
+        {
+            cur = a->d[i] / mod;
+            cur %= 10;
+            // printf("%d\n", cur);
+            mod /= 10;
+            r = Multiply(r, ten);
+            r->d[0] += cur;
+            quo = 0;
+            while (Compare(r, table[quo]) >= 0)
+            {
+                quo++;
+            }
+            quo--;
+            q = Multiply(q, ten);
+            q->d[0] += quo;
+            r = Subtract(r, table[quo]);
+        }
+    }
+    *remainder = r;
+    return q;
+}
 
 
 BigInt Power(BigInt num, llu p)
@@ -518,16 +537,19 @@ int main()
     // printf("Enter two number for multiplication\n");
     BigInt y = take_input();
     print_BigInt(y);
-    // BigInt z = take_input();
-    // print_BigInt(z);
+    BigInt z = take_input();
+    print_BigInt(z);
 
     // printf("%d ", Compare(y, z));
-    BigInt ans=factorial(10000);
-    print_BigInt(ans);
-
-    // BigInt ans=Multiply(y,z);
-    // printf("Your answer after multiplication is \n");
+    // BigInt ans=factorial(10000);
     // print_BigInt(ans);
+    BigInt rem;
+    BigInt ans = Divide(y, z, &rem);
+    // printf("Your answer after multiplication is \n");
+    printf("Quotient: ");
+    print_BigInt(ans);
+    printf("Remainder: ");
+    print_BigInt(rem);
 
     // Complex n1,n2;
     // long double x1=1.00,x2=2.00,x3.00=4,x4.00=5;
