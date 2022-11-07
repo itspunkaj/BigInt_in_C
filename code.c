@@ -317,6 +317,7 @@ void Left_Shift(BigInt num, unsigned int shift)
     }
     free(num->d);
     num->d = temp;
+    num->len+=shift;
 }
 
 int Compare(const BigInt a, const BigInt b)
@@ -340,38 +341,38 @@ int Compare(const BigInt a, const BigInt b)
     }
 }
 
-BigInt Divide(const BigInt a, const BigInt b, BigInt* rem)
-{
-    BigInt quotient = new_BigInt(1);
-    set_zero(quotient);
-    quotient->sign = 1 - a->sign ^ b->sign;
+// BigInt Divide(const BigInt a, const BigInt b, BigInt* rem)
+// {
+//     BigInt quotient = new_BigInt(1);
+//     set_zero(quotient);
+//     quotient->sign = 1 - a->sign ^ b->sign;
 
-    BigInt remainder = new_BigInt(1);
-    set_zero(remainder);
+//     BigInt remainder = new_BigInt(1);
+//     set_zero(remainder);
     
-    BigInt table[10];
-    table[0] = new_BigInt(1);
-    set_zero(table[0]);
-    for (int i = 1; i < 10; i++)
-    {
-        table[i] = Add(table[i - 1], b);
-    }
+//     BigInt table[10];
+//     table[0] = new_BigInt(1);
+//     set_zero(table[0]);
+//     for (int i = 1; i < 10; i++)
+//     {
+//         table[i] = Add(table[i - 1], b);
+//     }
 
-    for (int i = a->len - 1; i >= 0; i--)
-    {
-        remainder = Multiply(remainder, new_BigInt(BASE));
-        remainder->d[0] = a->d[i];
-        int j = 0;
-        while (Compare(remainder, table[j]) >= 0)
-        {
-            j++;
-        }
-        j--;
-        quotient = Multiply(quotient, new_BigInt(BASE));
-        quotient->d[0] = j;
-        remainder = Subtract(remainder, table[j]);
-    }
-}
+//     for (int i = a->len - 1; i >= 0; i--)
+//     {
+//         remainder = Multiply(remainder, new_BigInt(BASE));
+//         remainder->d[0] = a->d[i];
+//         int j = 0;
+//         while (Compare(remainder, table[j]) >= 0)
+//         {
+//             j++;
+//         }
+//         j--;
+//         quotient = Multiply(quotient, new_BigInt(BASE));
+//         quotient->d[0] = j;
+//         remainder = Subtract(remainder, table[j]);
+//     }
+// }
 
 
 BigInt Power(BigInt num, llu p)
@@ -502,8 +503,8 @@ int main()
     // print_BigInt(z);
 
     // printf("%d ", Compare(y, z));
-    BigInt c = Power(y,35000);
-    print_BigInt(c);
+    Left_Shift(y,3);
+    print_BigInt(y);
 
     // BigInt ans=Multiply(y,z);
     // printf("Your answer after multiplication is \n");
