@@ -322,20 +322,20 @@ void Left_Shift(BigInt num, unsigned int shift)
 
 int Compare(const BigInt a, const BigInt b)
 {
-    BigInt nv = Subtract(a, b);
+    BigInt diff = Subtract(a, b);
     int flag = 0;
-    for (int i = 0; i < nv->len; i++)
+    for (int i = 0; i < diff->len; i++)
     {
-        if (nv->d[i] != 0)
+        if (diff->d[i] != 0)
         {
             flag = 1;
         }
     }
-    if (nv->sign == 0)
+    if (diff->sign == 0)   // diff is negative
     {
         return -1;
     }
-    else if (nv->sign == 1)
+    else if (diff->sign == 1)
     {
         return flag;
     }
@@ -424,6 +424,28 @@ BigInt Power(BigInt num, llu p)
 }
 
 
+BigInt GCD(BigInt a, BigInt b)
+{
+    BigInt temp;
+    BigInt zero = new_BigInt(1);
+    set_zero(zero);
+    while (Compare(b, zero) != 0)
+    {
+        printf("%d\n", Compare(b, zero));
+        temp = Modulo(a, b);
+        a = b;
+        b = temp;
+    }
+    return a;
+}
+
+int gcd(int a, int b) {
+    while (b) {
+        a %= b;
+        // swap(a, b);
+    }
+    return a;
+}
 
 void Increment(const BigInt a, const BigInt delta)
 {
@@ -551,13 +573,18 @@ int main()
     // printf("%d ", Compare(y, z));
     // BigInt ans=factorial(10000);
     // print_BigInt(ans);
+    // // printf("Your answer after multiplication is \n");
+    
     BigInt rem;
     BigInt ans = Divide(y, z, &rem);
-    // printf("Your answer after multiplication is \n");
     printf("Quotient: ");
     print_BigInt(ans);
     printf("Remainder: ");
     print_BigInt(rem);
+
+    // BigInt ans = GCD(y, z);
+    // print_BigInt(ans);
+
 
     // Complex n1,n2;
     // long double x1=1.00,x2=2.00,x3.00=4,x4.00=5;
