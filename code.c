@@ -357,10 +357,12 @@ int Compare(const BigInt a, const BigInt b)
     }
     if (diff->sign == 0)   // diff is negative
     {
+        free_BigInt(diff);
         return -1;
     }
     else if (diff->sign == 1)
     {
+        free_BigInt(diff);
         return flag;
     }
 }
@@ -389,6 +391,7 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
     llu mod;
     llu cur;
     int quo;
+    BigInt temp;
 
     for (int i = a->len - 1; i >= 0; i--)
     {
@@ -400,7 +403,9 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
             cur %= 10;
             // printf("%d\n", cur);
             mod /= 10;
+            temp = r;
             r = Multiply(r, ten);
+            free_BigInt(temp);
             r->d[0] += cur;
             quo = 0;
             while (Compare(r, table[quo]) >= 0)
@@ -408,12 +413,24 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
                 quo++;
             }
             quo--;
+            temp = q;
             q = Multiply(q, ten);
+            free_BigInt(temp);
             q->d[0] += quo;
+            temp = r;
             r = Subtract(r, table[quo]);
+            free_BigInt(temp);
         }
     }
     *remainder = r;
+    
+    for (int i = 0; i <= 10; i++)
+    {
+        free_BigInt(table[i]);
+    }
+    free_BigInt(ten);
+
+    
     return q;
 }
 
@@ -663,15 +680,16 @@ int main()
     // print_BigInt(ans);
     // // printf("Your answer after multiplication is \n");
     
-    BigInt rem;
-    BigInt ans = Divide(y, z, &rem);
-    printf("Quotient: ");
-    print_BigInt(ans);
-    printf("Remainder: ");
-    print_BigInt(rem);
-
-    // BigInt ans = GCD(y, z);
+    // BigInt rem;
+    // BigInt ans = Divide(y, z, &rem);
+    // printf("Quotient: ");
     // print_BigInt(ans);
+    // printf("Remainder: ");
+    // print_BigInt(rem);
+
+    BigInt ans = GCD(y, z);
+    printf("GCD: ");
+    print_BigInt(ans);
 
 
     // Complex n1,n2;
