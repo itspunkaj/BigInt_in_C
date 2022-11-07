@@ -419,6 +419,25 @@ void Increment(const BigInt a, const BigInt delta)
     }
 }
 
+
+
+BigInt factorial(llu n)
+{
+    BigInt ans=new_BigInt(1);
+    // setzero(ans);
+    ans->d[0]=1;
+    // set_zero(temp);
+    for(int i=1;i<=n;i++)
+    {
+    BigInt temp=new_BigInt(1);
+    temp->d[0]=i;
+    ans=Multiply(ans,temp);
+
+    }
+    return ans;
+
+}
+
 BigInt take_input() // function to take input from user by string
 {
     char *arr;
@@ -497,14 +516,14 @@ BigInt take_input() // function to take input from user by string
 int main()
 {
     // printf("Enter two number for multiplication\n");
-    BigInt y = take_input();
-    print_BigInt(y);
+    // BigInt y = take_input();
+    // print_BigInt(y);
     // BigInt z = take_input();
     // print_BigInt(z);
 
     // printf("%d ", Compare(y, z));
-    Left_Shift(y,3);
-    print_BigInt(y);
+    BigInt ans=factorial(8000);
+    print_BigInt(ans);
 
     // BigInt ans=Multiply(y,z);
     // printf("Your answer after multiplication is \n");
