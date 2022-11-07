@@ -471,7 +471,7 @@ BigInt take_input() // function to take input from user by string
 
         count++;
     }
-
+    // printf("count :%d\n",count);
     int lenreq = count / 18;
     if (count % 18 != 0)
     {
@@ -483,7 +483,7 @@ BigInt take_input() // function to take input from user by string
     while (count != 0)
     {
         llu tmp = 0;
-        if (count < 18)
+        if (count <= 18)
         {
             for (int i = 0; i < count - 1; i++)
             {
@@ -516,13 +516,13 @@ BigInt take_input() // function to take input from user by string
 int main()
 {
     // printf("Enter two number for multiplication\n");
-    // BigInt y = take_input();
-    // print_BigInt(y);
+    BigInt y = take_input();
+    print_BigInt(y);
     // BigInt z = take_input();
     // print_BigInt(z);
 
     // printf("%d ", Compare(y, z));
-    BigInt ans=factorial(8000);
+    BigInt ans=factorial(10000);
     print_BigInt(ans);
 
     // BigInt ans=Multiply(y,z);
