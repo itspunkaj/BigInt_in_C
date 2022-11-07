@@ -294,6 +294,31 @@ BigInt Multiply(const BigInt a, const BigInt b)
     return c;
 }
 
+void Left_Shift(BigInt num, unsigned int shift)
+{
+    if (shift == 0)
+    {
+        return;
+    }
+    if (num->len == 1 && num->d[0] == 0)
+    {
+        return;
+    }
+
+    llu *temp = (llu *)malloc(sizeof(llu) * (num->len + shift));
+    for (unsigned int i = 0; i < shift; i++)
+    {
+        temp[i] = 0;
+    }
+    
+    for (unsigned int i = 0; i < num->len; i++)
+    {
+        temp[i + shift] = num->d[i];
+    }
+    free(num->d);
+    num->d = temp;
+}
+
 int Compare(const BigInt a, const BigInt b)
 {
     BigInt nv = Subtract(a, b);
@@ -314,6 +339,40 @@ int Compare(const BigInt a, const BigInt b)
         return flag;
     }
 }
+
+BigInt Divide(const BigInt a, const BigInt b, BigInt* rem)
+{
+    BigInt quotient = new_BigInt(1);
+    set_zero(quotient);
+    quotient->sign = 1 - a->sign ^ b->sign;
+
+    BigInt remainder = new_BigInt(1);
+    set_zero(remainder);
+    
+    BigInt table[10];
+    table[0] = new_BigInt(1);
+    set_zero(table[0]);
+    for (int i = 1; i < 10; i++)
+    {
+        table[i] = Add(table[i - 1], b);
+    }
+
+    for (int i = a->len - 1; i >= 0; i--)
+    {
+        remainder = Multiply(remainder, new_BigInt(BASE));
+        remainder->d[0] = a->d[i];
+        int j = 0;
+        while (Compare(remainder, table[j]) >= 0)
+        {
+            j++;
+        }
+        j--;
+        quotient = Multiply(quotient, new_BigInt(BASE));
+        quotient->d[0] = j;
+        remainder = Subtract(remainder, table[j]);
+    }
+}
+
 
 BigInt Power(BigInt num, llu p)
 {
@@ -430,6 +489,9 @@ BigInt take_input() // function to take input from user by string
     x->sign = sgn;
     return x;
 }
+
+
+
 
 int main()
 {
