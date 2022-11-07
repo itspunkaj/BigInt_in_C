@@ -125,7 +125,7 @@ void print_Comp(Complex a)
         printf("%g - %gi\n", (a->real), -(a->imag));
 }
 
-int max(int x, int y)
+int Max(int x, int y)
 {
     return x > y ? x : y;
 }
@@ -171,7 +171,7 @@ void increase_size(BigInt b, const unsigned int delta_len)
 // }
 BigInt Add(const BigInt a, const BigInt b)
 {
-    BigInt c = new_BigInt(1 + max(a->len, b->len));
+    BigInt c = new_BigInt(1 + Max(a->len, b->len));
     set_zero(c);
     llu carry = 0;
     for (unsigned int i = 0; i < c->len - 1; i++)
@@ -206,7 +206,7 @@ int isPrime(int n)
 
 BigInt Subtract(const BigInt a, const BigInt b)
 {
-    BigInt c = new_BigInt(1 + max(a->len, b->len));
+    BigInt c = new_BigInt(1 + Max(a->len, b->len));
     set_zero(c);
     ll carry = 0;
     ll temp;
