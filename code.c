@@ -111,9 +111,19 @@ Complex divide_complex(Complex a, Complex b)
 BigInt new_BigInt(const unsigned int length)
 {
     BigInt b = (BigInt)malloc(sizeof(BigIntObj));
+    if (b == NULL)
+    {
+        printf("Fatal error: Memory allocation failed!");
+        exit(1);
+    }
     b->sign = 1;
     b->len = length;
     b->d = (llu *)malloc(length * sizeof(llu));
+    if (b->d == NULL)
+    {
+        printf("Fatal error: Memory allocation failed!");
+        exit(1);
+    }
     return b;
 }
 
@@ -315,6 +325,11 @@ void Left_Shift(BigInt num, unsigned int shift)
     }
 
     llu *temp = (llu *)malloc(sizeof(llu) * (num->len + shift));
+    if (temp == NULL)
+    {
+        printf("Fatal Error: Memory allocation failed!");
+        exit(1);
+    }
     for (unsigned int i = 0; i < shift; i++)
     {
         temp[i] = 0;
@@ -571,8 +586,8 @@ BigInt take_input() // function to take input from user by string
 Fraction new_fraction()
 {
     Fraction c;
-     c=(Fraction)malloc(sizeof(FractionObj));
-     return c;
+    c=(Fraction)malloc(sizeof(FractionObj));
+    return c;
 }
 Fraction new_fraction_input()
 {
