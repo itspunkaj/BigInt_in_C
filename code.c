@@ -24,6 +24,15 @@ typedef struct BigIntStruct BigIntObj;
 typedef struct ComplexStruct *Complex;
 typedef struct ComplexStruct ComplexObj;
 
+struct FractionStruct
+{
+    BigInt num;
+    BigInt den;
+};
+
+typedef struct FractionStruct * Fraction;
+typedef struct FractionStruct  FractionObj;
+
 typedef unsigned long long llu;
 typedef long long ll;
 
@@ -559,7 +568,71 @@ BigInt take_input() // function to take input from user by string
     return x;
 }
 
+Fraction new_fraction()
+{
+    Fraction c;
+     c=(Fraction)malloc(sizeof(FractionObj));
+     return c;
+}
+Fraction new_fraction_input()
+{
+    Fraction c;
+    BigInt a=take_input();
+    BigInt b= take_input();
 
+    c=(Fraction)malloc(sizeof(FractionObj));
+
+    c->num=a;
+    c->den=b;
+
+    return c;
+
+}
+
+void print_fraction(Fraction a)
+{
+    printf("Numerator :  ");
+    print_BigInt(a->num);
+    printf("Denominator : ");
+    print_BigInt(a->den);
+}
+
+Fraction add_fraction(Fraction a, Fraction b)
+{
+    Fraction c=new_fraction();
+    c->num =Add(Multiply(a->num,b->den),Multiply(a->den,b->num));
+    c->den=Multiply(a->den,b->den);
+
+    return c;
+}
+
+Fraction subtract_fraction(Fraction a,Fraction b)
+{
+    Fraction c=new_fraction();
+    c->num=Subtract(Multiply(a->num,b->den),Multiply(a->den,b->num));
+    c->den=Multiply(a->den,b->den);
+
+    return c;
+}
+
+Fraction multiply_fraction(Fraction a,Fraction b)
+{
+    Fraction c=new_fraction();
+    c->num=Multiply(a->num,b->num);
+    c->den=Multiply(a->den,b->den);
+
+    return c;
+    
+}
+
+Fraction divide_fraction(Fraction a, Fraction b)
+{
+    Fraction c=new_fraction();
+    c->num=Multiply(a->num,b->den);
+    c->den=Multiply(a->den,b->num);
+
+    return c;
+}
 
 
 int main()
