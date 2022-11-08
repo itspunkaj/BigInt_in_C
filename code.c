@@ -140,6 +140,11 @@ int Max(int x, int y)
     return x > y ? x : y;
 }
 
+int Min(int x, int y)
+{
+    return x < y ? x : y;
+}
+
 void set_zero(BigInt b)
 {
     for (unsigned int i = 0; i < b->len; i++)
@@ -448,7 +453,6 @@ BigInt Power(BigInt num, llu p)
     
     BigInt temp;
     while (p > 0)
-
     {
         if (p & 1)
         {
@@ -461,7 +465,7 @@ BigInt Power(BigInt num, llu p)
         num =Multiply(num,num);
         free_BigInt(temp);
     }
-        return ans;
+    return ans;
 }
 
 
@@ -604,6 +608,8 @@ Fraction new_fraction()
 {
     Fraction c;
     c=(Fraction)malloc(sizeof(FractionObj));
+    // c->num=new_BigInt(1);
+    // c->den=new_BigInt(1);
     return c;
 }
 Fraction new_fraction_input()
@@ -666,14 +672,120 @@ Fraction divide_fraction(Fraction a, Fraction b)
     return c;
 }
 
+void free_fraction(Fraction a)
+{
+    free_BigInt(a->num);
+    free_BigInt(a->den);
+    free(a);
+}
+
+
+void cancel_zeroes(Fraction a)
+{
+    int cnt = 0;
+    for (int i = 0; i < Min(a->num->len,a->den->len); i++)
+    {
+        if (a->num->d[i] == 0 && a->den->d[i] == 0)
+        {
+            cnt++;
+        }
+        else
+        {
+            break;
+        }
+    }
+    a->num->d += cnt;
+    a->den->d += cnt;
+    a->num->len -= cnt;
+    a->den->len -= cnt;
+}
+
+Fraction Sqrt(BigInt n)
+{
+    // Calculate the square root of a BigInt using Newton Rapson method
+    
+    Fraction x = new_fraction();
+    // free_BigInt(x->num);
+    
+    // x->num = new_BigInt(1);
+    // x->num->d[0] = 2050048640064001ULL;
+    // x->den = new_BigInt(1);
+    // x->den->d[0] = 20495363200160ULL;
+    
+    x->num = new_BigInt(4);
+    x->num->d[0] = 38194350081024001ULL;
+    x->num->d[1] = 947199942084943826ULL;
+    x->num->d[2] = 764652037898659122ULL;
+    x->num->d[3] = 141301459ULL;
+
+    x->den = new_BigInt(4);
+    x->den->d[0] = 118368174297600640ULL;
+    x->den->d[1] = 1550394278198635ULL;
+    x->den->d[2] = 476412055532869542ULL;
+    x->den->d[3] = 1412661ULL;
+    
+    Fraction temp, temp1, f, df;
+    Fraction two = new_fraction();
+    two->num = new_BigInt(1);
+    two->den = new_BigInt(1);
+    two->num->d[0] = 2;
+    two->den->d[0] = 1;
+    
+    Fraction nn = new_fraction();
+    nn->den = new_BigInt(1);
+    nn->num = n;
+    nn->den->d[0] = 1;
+
+    // print_fraction(nn);
+
+    for (int i = 0; i < 7; i++)
+    {
+        f = multiply_fraction(x, x);
+        temp = f;
+        f = subtract_fraction(f, nn);
+        // free_fraction(temp);
+        df = multiply_fraction(x, two);
+        temp = divide_fraction(f, df);
+        temp1 = x;
+        x = subtract_fraction(x, temp);
+        // free_fraction(temp);
+        // free_fraction(temp1);
+        // free_fraction(df);
+        // free_fraction(f);
+
+        cancel_zeroes(x);
+        
+        // f = multiply_fraction(x, x);
+        // temp = f;
+        // f = subtract_fraction(f, nn);
+        // free_fraction(temp);
+        // df = multiply_fraction(x, two);
+        // temp = divide_fraction(f, df);
+        // temp1 = x;
+        // x = subtract_fraction(x, temp);
+        // free_fraction(temp);
+        // free_fraction(temp1);
+        // free_fraction(df);
+        // free_fraction(f);
+
+
+    }
+    return x;
+}
+
+
 
 int main()
 {
     // printf("Enter two number for multiplication\n");
     BigInt y = take_input();
     print_BigInt(y);
-    BigInt z = take_input();
-    print_BigInt(z);
+    // BigInt z = take_input();
+    // print_BigInt(z);
+
+    Fraction x = Sqrt(y);
+    print_fraction(x);
+
 
     // printf("%d ", Compare(y, z));
     // BigInt ans=factorial(10000);
@@ -687,9 +799,9 @@ int main()
     // printf("Remainder: ");
     // print_BigInt(rem);
 
-    BigInt ans = GCD(y, z);
-    printf("GCD: ");
-    print_BigInt(ans);
+    // BigInt ans = GCD(y, z);
+    // printf("GCD: ");
+    // print_BigInt(ans);
 
 
     // Complex n1,n2;
