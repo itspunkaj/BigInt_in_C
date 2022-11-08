@@ -36,6 +36,10 @@ typedef struct FractionStruct  FractionObj;
 typedef unsigned long long llu;
 typedef long long ll;
 
+
+unsigned int decimal_precision = 5000;
+
+
 #define MAX_FACT 10000
 BigInt FACT[MAX_FACT];
 
@@ -462,6 +466,61 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
     return q;
 }
 
+
+char* Decimal_Division(BigInt a, BigInt b)
+{
+    BigInt remainder, remainder2;
+    BigInt quotient = Divide(a, b, &remainder);
+    llu mod;
+    llu cur;
+    unsigned int ind = 0;
+    unsigned int sz = quotient->len * 18 + decimal_precision + 2;
+    char* result = (char*)malloc(sizeof(char) * sz);
+    for (int i = a->len - 1; i >= 0; i--)
+    {
+        mod = BASE;
+        mod /= 10;
+        while (mod)
+        {
+            cur = a->d[i] / mod;
+            cur %= 10;
+            mod /= 10;
+            result[ind++] = cur + '0';
+        }
+    }
+    
+    result[ind++] = '.';
+    free_BigInt(quotient);
+    Left_Shift(remainder, (decimal_precision + 17) / 18);
+    quotient = Divide(remainder, b, &remainder2);
+    
+    for (int i = a->len - 1; i >= 0; i--)
+    {
+        mod = BASE;
+        mod /= 10;
+        while (mod)
+        {
+            cur = a->d[i] / mod;
+            cur %= 10;
+            mod /= 10;
+            result[ind++] = cur + '0';
+            
+            if (ind == sz - 1)
+            {
+                break;
+            }
+        }
+    }
+    result[ind] = '\0';
+
+    free_BigInt(remainder);
+    free_BigInt(remainder2);
+    free_BigInt(quotient);
+    
+    return result;
+}
+
+
 BigInt Modulo(BigInt a, BigInt b)
 {
     BigInt r;
@@ -788,7 +847,7 @@ Fraction Sqrt(BigInt n)
 
     // print_fraction(nn);
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 5; i++)
     {
         f = multiply_fraction(x, x);
         temp = f;
@@ -964,7 +1023,7 @@ int main()
     // print_fraction(ans);
 
 
-    Chudnovsky_algorithm(200);
+    Chudnovsky_algorithm(100);
 
 
     // printf("%d ", Compare(y, z));
