@@ -190,6 +190,15 @@ void increase_size(BigInt b, const unsigned int delta_len)
 // }
 BigInt Add(const BigInt a, const BigInt b)
 {
+    if (a->sign == 1 && b->sign == 0)
+    {
+        return Subtract(a, b);
+    }
+    if (a->sign == 0 && b->sign == 1)
+    {
+        return Subtract(b, a);
+    }
+
     BigInt c = new_BigInt(1 + Max(a->len, b->len));
     set_zero(c);
     llu carry = 0;
@@ -205,6 +214,12 @@ BigInt Add(const BigInt a, const BigInt b)
     {
         c->d[c->len - 1] = carry;
     }
+
+    if (a->sign == 0 && b->sign == 0)
+    {
+        c->sign = 0;
+    }
+
     return c;
 }
 
