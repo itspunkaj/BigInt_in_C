@@ -36,6 +36,10 @@ typedef struct FractionStruct  FractionObj;
 typedef unsigned long long llu;
 typedef long long ll;
 
+#define MAX_FACT 10000
+BigInt FACT[MAX_FACT];
+
+
 Complex new_comp()
 {
     Complex temp;
@@ -532,6 +536,22 @@ BigInt factorial(llu n)
 
 }
 
+
+void precompute_factorial()
+{
+    FACT[0] = factorial(1);
+    BigInt n = new_BigInt(1);
+    n->d[0] = 1;
+
+    for (int i = 1; i < MAX_FACT; i++)
+    {
+        FACT[i] = Multiply(FACT[i-1], n);
+        n->d[0]++;
+    }
+    free_BigInt(n);
+}
+
+
 BigInt take_input() // function to take input from user by string
 {
     char *arr;
@@ -774,17 +794,18 @@ Fraction Sqrt(BigInt n)
 }
 
 
-
 int main()
 {
     // printf("Enter two number for multiplication\n");
-    BigInt y = take_input();
-    print_BigInt(y);
+    // BigInt y = take_input();
+    // print_BigInt(y);
     // BigInt z = take_input();
     // print_BigInt(z);
 
-    Fraction x = Sqrt(y);
-    print_fraction(x);
+    // Fraction x = Sqrt(y);
+    // print_fraction(x);
+
+
 
 
     // printf("%d ", Compare(y, z));
