@@ -40,6 +40,10 @@ typedef long long ll;
 BigInt FACT[MAX_FACT];
 
 
+
+BigInt Subtract(const BigInt a, const BigInt b);
+
+
 Complex new_comp()
 {
     Complex temp;
@@ -707,6 +711,13 @@ Fraction divide_fraction(Fraction a, Fraction b)
     return c;
 }
 
+void reciprocal_fraction(Fraction a)
+{
+    BigInt temp=a->num;
+    a->num=a->den;
+    a->den=temp;
+}
+
 void free_fraction(Fraction a)
 {
     free_BigInt(a->num);
@@ -743,6 +754,11 @@ Fraction Sqrt(BigInt n)
     // free_BigInt(x->num);
     
     // x->num = new_BigInt(1);
+    // x->num->d[0] = 2;
+    // x->den = new_BigInt(1);
+    // x->den->d[0] = 1;
+    
+    // x->num = new_BigInt(1);
     // x->num->d[0] = 2050048640064001ULL;
     // x->den = new_BigInt(1);
     // x->den->d[0] = 20495363200160ULL;
@@ -752,7 +768,6 @@ Fraction Sqrt(BigInt n)
     x->num->d[1] = 947199942084943826ULL;
     x->num->d[2] = 764652037898659122ULL;
     x->num->d[3] = 141301459ULL;
-
     x->den = new_BigInt(4);
     x->den->d[0] = 118368174297600640ULL;
     x->den->d[1] = 1550394278198635ULL;
@@ -773,7 +788,7 @@ Fraction Sqrt(BigInt n)
 
     // print_fraction(nn);
 
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 6; i++)
     {
         f = multiply_fraction(x, x);
         temp = f;
@@ -809,18 +824,147 @@ Fraction Sqrt(BigInt n)
 }
 
 
+
+
+void Chudnovsky_algorithm(int n)
+{
+    // Computes value of PI using Chudnovsky algorithm
+    // n is the number of terms to be used in the algorithm
+
+    ll k = -6;
+    
+    BigInt c = new_BigInt(1);
+    BigInt p = new_BigInt(1);
+    BigInt q = new_BigInt(1);
+    BigInt L = new_BigInt(1);
+    BigInt dL = new_BigInt(1);
+    BigInt X = new_BigInt(1);
+    BigInt dX = new_BigInt(1);
+    Fraction M = new_fraction();
+    M->num = new_BigInt(1);
+    M->den = new_BigInt(1);
+
+    c->d[0] = 426880;
+    L->d[0] = 13591409;
+    dL->d[0] = 545140134;
+    X->d[0] = 1;
+    dX->d[0] = 262537412640768000ULL;
+    M->num->d[0] = 1;
+    M->den->d[0] = 1;
+
+    Fraction temp = new_fraction();
+    Fraction T = new_fraction();
+    Fraction SUM0 = new_fraction();
+    Fraction SUM1 = new_fraction();
+    SUM0->num = new_BigInt(1);
+    SUM0->den = new_BigInt(1);
+    SUM1->num = new_BigInt(1);
+    SUM1->den = new_BigInt(1);
+    
+    T->num = L;
+    T->den = X;
+    T = multiply_fraction(T, M);
+    SUM0->num = L;
+    SUM0->den = X;
+    SUM1->num->d[0] = 0;
+    SUM1->den->d[0] = 1;
+
+    // printf("Computing sqrt(10005)...\n");
+    BigInt _10005 = new_BigInt(1);
+    _10005->d[0] = 10005;
+    Fraction sqrt_10005 = Sqrt(_10005);
+    // print_fraction(sqrt_10005);
+    // printf("sqrt(10005) computed upto 996 decimal places\n");
+
+
+    for (int i = 1; i <= n; i++)
+    {
+        k += 12;
+        p->d[0] = k * k * k - 16 * k;
+        q->d[0] = i * i * i;
+
+        M->num = Multiply(M->num, p);
+        M->den = Multiply(M->den, q);
+
+        L = Add(L, dL);
+
+        X = Multiply(X, dX);
+        // X->sign = 1 - X->sign;
+
+        T->num = L;
+        T->den = X;
+        T = multiply_fraction(T, M);
+
+        if (i % 2 == 0)
+        {
+            temp = SUM0;
+            SUM0 = add_fraction(SUM0, T);
+            // free_fraction(temp);
+        }
+        else
+        {
+            temp = SUM1;
+            SUM1 = add_fraction(SUM1, T);
+            // free_fraction(temp);
+        }
+
+        // SUM = add_fraction(SUM, T);
+        cancel_zeroes(SUM0);
+        cancel_zeroes(SUM1);
+        cancel_zeroes(M);
+    }
+
+    // printf("\nSUM0 = \n");
+    // print_fraction(SUM0);
+
+    // printf("\nSUM1 = \n");
+    // print_fraction(SUM1);
+
+    Fraction SUM = subtract_fraction(SUM0, SUM1);
+
+
+    // printf("\nSUM = \n");
+    // print_fraction(SUM);
+
+    // printf("\n");
+
+    reciprocal_fraction(SUM);
+    cancel_zeroes(SUM);
+
+    // print_fraction(SUM);
+
+    Fraction PI = multiply_fraction(SUM, sqrt_10005);
+    PI->num = Multiply(PI->num, c);
+    // PI->num->sign = 1;
+    // PI->den->sign = 1;
+
+    cancel_zeroes(PI);
+
+    print_fraction(PI);
+
+}
+
+
+
+
 int main()
 {
     // printf("Enter two number for multiplication\n");
+    
+    // BigInt x = new_BigInt(1);
+    // x->d[0] = 10005;
+    // print_BigInt(y);
+    
     // BigInt y = take_input();
     // print_BigInt(y);
     // BigInt z = take_input();
     // print_BigInt(z);
 
-    // Fraction x = Sqrt(y);
-    // print_fraction(x);
+    // Fraction ans = Sqrt(x);
+    // print_fraction(ans);
 
 
+    Chudnovsky_algorithm(200);
 
 
     // printf("%d ", Compare(y, z));
