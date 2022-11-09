@@ -1651,8 +1651,23 @@ prompt:
             break;
 
         }
+        
+        case 24:
+        {
+            printf("Enter new precision for decimal conversion: ");
+            scanf("%d", &decimal_precision);
+            printf("\n");
+            break;
+        }
+
+        case 25:
+        {
+            printf("Exiting...");
+            exit(0);
+        }
     }
 
+    goto prompt;
 
 
     return 0;
