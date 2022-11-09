@@ -47,6 +47,8 @@ BigInt FACT[MAX_FACT];
 
 BigInt Subtract(const BigInt a, const BigInt b);
 BigInt Power(BigInt num, llu p);
+BigInt GCD(BigInt a, BigInt b);
+
 
 Complex new_comp()
 {
@@ -779,9 +781,24 @@ void print_fraction(Fraction a)
 
 Fraction add_fraction(Fraction a, Fraction b)
 {
-    Fraction c=new_fraction();
-    c->num =Add(Multiply(a->num,b->den),Multiply(a->den,b->num));
-    c->den=Multiply(a->den,b->den);
+    Fraction c = new_fraction();
+    // c->num =Add(Multiply(a->num,b->den),Multiply(a->den,b->num));
+    // c->den=Multiply(a->den,b->den);
+
+    BigInt rem;
+    BigInt g = GCD(a->den, b->den);
+    BigInt a1 = Multiply(a->num, g);
+    BigInt b1 = Multiply(b->num, g);
+    BigInt d = Multiply(a->den, b->den);
+
+    c->num = Add(a1, b1);
+    c->den = Divide(d, g, &rem);
+
+    free_BigInt(a1);
+    free_BigInt(b1);
+    free_BigInt(d);
+    free_BigInt(g);
+    free_BigInt(rem);
 
     return c;
 }
