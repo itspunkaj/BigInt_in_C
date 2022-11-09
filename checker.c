@@ -32,7 +32,7 @@ int main()
         }
         // printf("The size of the array is : %d\n", sz);
 
-        int correct = -2;
+        int correct = -4;
         for (int i = 0; i < sz; i++)
         {
             if (Arr[i] != correct_PI[i])
@@ -46,7 +46,8 @@ int main()
         }
 
         printf("value is correct upto %d decimal places\n", correct);
-        ;
+        break;
+        
     }
     case 2:
     {
@@ -66,7 +67,7 @@ int main()
         int correct = -2;
         for (int i = 0; i < sz; i++)
         {
-            if (Arr[i] != correct_PI[i])
+            if (Arr[i] != correct_root[i])
             {
                 break;
             }
