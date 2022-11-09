@@ -14,14 +14,14 @@ int main()
     printf("Select one option\n");
     printf("1.Check accuracy of sqrt(10005)\n2.Check accuracy of PI\n");
     int choice;
-    scanf("%d",&choice);
-    switch(choice)
+    scanf("%d", &choice);
+    switch (choice)
     {
-        
-    }
-    FILE *ptr;
-    ptr = fopen(OUTPUT_PI_FILENAME, "r"); // example.txt is the file which contains the input data
-        int sz = 0;                        // indicating the size of the array,increased as per user's input
+    case 1:
+    {
+        FILE *ptr;
+        ptr = fopen(OUTPUT_SQRT_FILENAME, "r"); // example.txt is the file which contains the input data
+        int sz = 0;                             // indicating the size of the array,increased as per user's input
         while (!feof(ptr))
         {
             int x;
@@ -32,19 +32,51 @@ int main()
         }
         // printf("The size of the array is : %d\n", sz);
 
+        int correct = -2;
+        for (int i = 0; i < sz; i++)
+        {
+            if (Arr[i] != correct_PI[i])
+            {
+                break;
+            }
+            else
+            {
+                correct++;
+            }
+        }
 
-    int correct=-2;
-    for(int i=0;i<sz;i++)
-    {
-        if(Arr[i]!=correct_PI[i])
-        {
-            break;
-        }
-        else
-        {
-            correct++;
-        }
+        printf("value is correct upto %d decimal places\n", correct);
+        ;
     }
+    case 2:
+    {
+        FILE *ptr;
+        ptr = fopen(OUTPUT_PI_FILENAME, "r");  
+        int sz = 0;                             
+        while (!feof(ptr))
+        {
+            int x;
+            fscanf(ptr, "%c", &x);
+            Arr = (char *)realloc(Arr, (++sz) * sizeof(char)); // reallocating the size every time as size is unknown
 
-    printf("value is correct upto %d decimal places\n",correct);
+            Arr[sz - 1] = x;
+        }
+        // printf("The size of the array is : %d\n", sz);
+
+        int correct = -2;
+        for (int i = 0; i < sz; i++)
+        {
+            if (Arr[i] != correct_PI[i])
+            {
+                break;
+            }
+            else
+            {
+                correct++;
+            }
+        }
+
+        printf("value is correct upto %d decimal places\n", correct);
+    }
+    }
 }
