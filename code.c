@@ -48,7 +48,7 @@ typedef long long ll;
 
 BigInt FACT[MAX_FACT];
 Fraction sqrt_10005;
-
+char* PI_str;
 
 
 // Function prototypes
@@ -108,10 +108,10 @@ void free_Fraction(Fraction a);
 void cancel_zeroes(Fraction a);
 
 // Calculate the square root of a BigInt using Newton Rapson method
-Fraction Sqrt(BigInt n);
+Fraction Sqrt(BigInt k, int n);
 
 // Computes value of PI using Chudnovsky algorithm
-char* Chudnovsky_algorithm(int n);
+void PI_Chudnovsky(int n);
 
 
 
@@ -1045,7 +1045,7 @@ void cancel_zeroes(Fraction a)
 
 
 
-Fraction Sqrt(BigInt n)
+Fraction Sqrt(BigInt k, int n)
 {
     // Calculate the square root of a BigInt using Newton Rapson method
     
@@ -1062,6 +1062,7 @@ Fraction Sqrt(BigInt n)
     x->num->d[1] = 947199942084943826ULL;
     x->num->d[2] = 764652037898659122ULL;
     x->num->d[3] = 141301459ULL;
+
     x->den = new_BigInt(4);
     x->den->d[0] = 118368174297600640ULL;
     x->den->d[1] = 1550394278198635ULL;
@@ -1077,10 +1078,10 @@ Fraction Sqrt(BigInt n)
     
     Fraction nn = new_Fraction();
     nn->den = new_BigInt(1);
-    nn->num = n;
+    nn->num = k;
     nn->den->d[0] = 1;
 
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < n; i++)
     {
         f = multiply_Fraction(x, x);
         temp = f;
@@ -1102,7 +1103,7 @@ Fraction Sqrt(BigInt n)
 
 
 
-char* Chudnovsky_algorithm(int n)
+void PI_Chudnovsky(int n)
 {
     // Computes value of PI using Chudnovsky algorithm
     // n is the number of terms to be used in the algorithm
@@ -1148,7 +1149,7 @@ char* Chudnovsky_algorithm(int n)
     printf("Computing sqrt(10005)...\n");
     BigInt _10005 = new_BigInt(1);
     _10005->d[0] = 10005;
-    sqrt_10005 = Sqrt(_10005);
+    sqrt_10005 = Sqrt(_10005, 4);
     printf("sqrt(10005) computed\n");
 
     printf("Computing term    ");
@@ -1219,9 +1220,7 @@ char* Chudnovsky_algorithm(int n)
 
     printf("Now computing decimal value of PI...\n");
 
-    char *ans = Decimal_Division(PI->num, PI->den);
-
-    return ans;
+    PI_str = Decimal_Division(PI->num, PI->den);
 }
 
 
@@ -1229,6 +1228,57 @@ char* Chudnovsky_algorithm(int n)
 
 int main()
 {
+
+    int choice;
+
+    printf("===============================================================\n");
+
+    printf("(I)\tBasic Operations on Big Integers\n");
+    printf("   \t--------------------------------\n");
+    printf("\t 1. Addition\n");
+    printf("\t 2. Subtraction\n");
+    printf("\t 3. Multiplication\n");
+    printf("\t 4. Division\n");
+    printf("\t 5. Decimal Division\n");
+    printf("\t 6. Remainder (Modulo)\n");
+    printf("\t 7. GCD\n");
+    printf("\t 8. Power\n");
+    printf("\t 9. Factorial\n");
+    printf("\t10. Square Root\n");
+    printf("\n");
+
+    printf("(II)\tOperations on Complex Numbers\n");
+    printf("   \t------------------------------\n");
+    printf("\t11. Addition\n");
+    printf("\t12. Subtraction\n");
+    printf("\t13. Multiplication\n");
+    printf("\t14. Division\n");
+    printf("\t15. Conjugate\n");
+    printf("\t16. Modulus\n");
+    printf("\n");
+
+    printf("(III)\tOperations on Fractions\n");
+    printf("   \t------------------------\n");
+    printf("\t17. Addition\n");
+    printf("\t18. Subtraction\n");
+    printf("\t19. Multiplication\n");
+    printf("\t20. Division\n");
+    printf("\t21. Reduce to Simplest Form\n");
+    printf("\n");
+
+    printf("(IV)\tCOMPUTATION OF PI\n");
+    printf("   \t-----------------\n");
+    printf("\t22. Compute Sqrt(10005) using Newton-Raphson Algorithm\n");
+    printf("\t23. Compute Value of PI using Chudnovsky Algorithm\n");
+    printf("\n");
+
+    printf("(V)\tSettings\n");
+    printf("   \t---------\n");
+    printf("\t24. Set Decimal Precision\n");
+    printf("\t25. Exit the program\n");
+
+    printf("===============================================================\n");
+
 
     
 
