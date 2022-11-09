@@ -37,7 +37,7 @@ typedef unsigned long long llu;
 typedef long long ll;
 
 
-unsigned int decimal_precision = 5000;
+unsigned int decimal_precision = 20;
 
 
 #define MAX_FACT 10000
@@ -46,7 +46,7 @@ BigInt FACT[MAX_FACT];
 
 
 BigInt Subtract(const BigInt a, const BigInt b);
-
+BigInt Power(BigInt num, llu p);
 
 Complex new_comp()
 {
@@ -193,6 +193,14 @@ void increase_size(BigInt b, const unsigned int delta_len)
         b->d[i] = 0;
 }
 
+void remove_preceding_zeroes(BigInt a)
+{
+    while (a->len > 1 && a->d[a->len - 1] == 0)
+    {
+        a->len--;
+    }
+}
+
 // void increase_size1(BigInt b) {
 //     increase_size(b, b->len);
 // }
@@ -227,7 +235,8 @@ BigInt Add(const BigInt a, const BigInt b)
     {
         c->sign = 0;
     }
-
+    
+    remove_preceding_zeroes(c);
     return c;
 }
 
@@ -297,6 +306,7 @@ BigInt Subtract(const BigInt a, const BigInt b)
         }
     }
 
+    remove_preceding_zeroes(c);
     return c;
 }
 
@@ -342,6 +352,8 @@ BigInt Multiply(const BigInt a, const BigInt b)
         }
         c->d[i + b->len] = carry;
     }
+
+    remove_preceding_zeroes(c);
     return c;
 }
 
@@ -454,6 +466,7 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
             free_BigInt(temp);
         }
     }
+    remove_preceding_zeroes(r);
     *remainder = r;
     
     for (int i = 0; i <= 10; i++)
@@ -462,60 +475,91 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
     }
     free_BigInt(ten);
 
-    
+    remove_preceding_zeroes(q);
     return q;
 }
 
 
 char* Decimal_Division(BigInt a, BigInt b)
 {
-    BigInt remainder, remainder2;
+    BigInt remainder;
+    BigInt temp = new_BigInt(1);
     BigInt quotient = Divide(a, b, &remainder);
     llu mod;
     llu cur;
+    int flag = 1;
     unsigned int ind = 0;
     unsigned int sz = quotient->len * 18 + decimal_precision + 2;
+
     char* result = (char*)malloc(sizeof(char) * sz);
-    for (int i = a->len - 1; i >= 0; i--)
+    for (int i = quotient->len - 1; i >= 0; i--)
     {
         mod = BASE;
         mod /= 10;
         while (mod)
         {
-            cur = a->d[i] / mod;
+            cur = quotient->d[i] / mod;
             cur %= 10;
             mod /= 10;
+            if (flag) {
+                if (cur == 0) {
+                    sz--;
+                    continue;
+                }
+                else {
+                    flag = 0;
+                }
+            }
+            // printf("%d\n", cur);
             result[ind++] = cur + '0';
         }
+        
     }
+    print_BigInt(remainder);
     
     result[ind++] = '.';
-    free_BigInt(quotient);
+    // return result;
+    // free_BigInt(quotient);
     Left_Shift(remainder, (decimal_precision + 17) / 18);
-    quotient = Divide(remainder, b, &remainder2);
+    // BigInt ten = new_BigInt(1);
+    // ten->d[0] = 10;
+    // remainder = Multiply(remainder, Power(ten, decimal_precision));
+    quotient = Divide(remainder, b, &temp);
+
+    printf("Quotient: ");
+    print_BigInt(quotient);
+    printf("%d\n", quotient->len);
     
-    for (int i = a->len - 1; i >= 0; i--)
+    printf("sz = %d\n", sz);
+    printf("ind = %d\n", ind);
+    
+    for (int i = quotient->len - 1; i >= 0; i--)
     {
         mod = BASE;
         mod /= 10;
         while (mod)
         {
-            cur = a->d[i] / mod;
+            cur = quotient->d[i] / mod;
             cur %= 10;
             mod /= 10;
             result[ind++] = cur + '0';
+            // printf("%d\n", cur);
             
             if (ind == sz - 1)
             {
                 break;
             }
         }
+        if (ind == sz - 1)
+        {
+            break;
+        }
     }
     result[ind] = '\0';
 
-    free_BigInt(remainder);
-    free_BigInt(remainder2);
-    free_BigInt(quotient);
+    // free_BigInt(remainder);
+    // free_BigInt(temp);
+    // free_BigInt(quotient);
     
     return result;
 }
@@ -558,7 +602,7 @@ BigInt GCD(BigInt a, BigInt b)
     set_zero(zero);
     while (Compare(b, zero) != 0)
     {
-        printf("%d\n", Compare(b, zero));
+        // printf("%d\n", Compare(b, zero));
         temp = Modulo(a, b);
         a = b;
         b = temp;
@@ -1014,16 +1058,21 @@ int main()
     // x->d[0] = 10005;
     // print_BigInt(y);
     
-    // BigInt y = take_input();
-    // print_BigInt(y);
-    // BigInt z = take_input();
-    // print_BigInt(z);
+    BigInt y = take_input();
+    print_BigInt(y);
+    BigInt z = take_input();
+    print_BigInt(z);
 
     // Fraction ans = Sqrt(x);
     // print_fraction(ans);
 
 
-    Chudnovsky_algorithm(100);
+    // char *ans = Decimal_Division(y, z);
+    // printf("%s\n", ans);
+
+
+
+    // Chudnovsky_algorithm(100);
 
 
     // printf("%d ", Compare(y, z));
@@ -1038,9 +1087,9 @@ int main()
     // printf("Remainder: ");
     // print_BigInt(rem);
 
-    // BigInt ans = GCD(y, z);
-    // printf("GCD: ");
-    // print_BigInt(ans);
+    BigInt ans = GCD(y, z);
+    printf("GCD: ");
+    print_BigInt(ans);
 
 
     // Complex n1,n2;
@@ -1067,7 +1116,7 @@ int main()
 
     // printf("%d\n", x->len);
 
-    ;
+    
 
     return 0;
 }
