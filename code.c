@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #define BASE 1000000000000000000ULL; // 1e18
 #define HALFBASE 1000000000ULL
@@ -1199,6 +1200,7 @@ int main()
 {
 
     int choice;
+    clock_t t;
 
 prompt:
 
@@ -1253,6 +1255,9 @@ prompt:
 
     printf("\nEnter your choice: ");
     scanf("%d", &choice);
+
+    
+    t = clock();
 
     switch (choice)
     {
@@ -1666,6 +1671,11 @@ prompt:
             exit(0);
         }
     }
+
+    t = clock() - t;
+    double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
+ 
+    printf("fun() took %f seconds to execute \n", time_taken);
 
     goto prompt;
 
