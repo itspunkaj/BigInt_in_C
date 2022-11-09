@@ -1198,9 +1198,9 @@ void PI_Chudnovsky(int n)
 
 int main()
 {
-
     int choice;
     clock_t t;
+    double time;
 
 prompt:
 
@@ -1256,9 +1256,6 @@ prompt:
     printf("\nEnter your choice: ");
     scanf("%d", &choice);
 
-    
-    t = clock();
-
     switch (choice)
     {
         case 1:
@@ -1267,9 +1264,13 @@ prompt:
             BigInt a = input_BigInt();
             printf("Enter the second number: ");
             BigInt b = input_BigInt();
+            t = clock();
             BigInt c = Add(a, b);
             printf("The sum is: ");
             print_BigInt(c);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1280,9 +1281,13 @@ prompt:
             BigInt a = input_BigInt();
             printf("Enter the second number: ");
             BigInt b = input_BigInt();
+            t = clock();
             BigInt c = Subtract(a, b);
             printf("The difference is: ");
             print_BigInt(c);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1293,9 +1298,13 @@ prompt:
             BigInt a = input_BigInt();
             printf("Enter the second number: ");
             BigInt b = input_BigInt();
+            t = clock();
             BigInt c = Multiply(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The product is: ");
             print_BigInt(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1307,11 +1316,15 @@ prompt:
             printf("Enter the divisor: ");
             BigInt b = input_BigInt();
             BigInt rem;
+            t = clock();
             BigInt c = Divide(a, b, &rem);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The quotient is: ");
             print_BigInt(c);
             printf("The remainder is: ");
             print_BigInt(rem);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1322,9 +1335,13 @@ prompt:
             BigInt a = input_BigInt();
             printf("Enter the divisor: ");
             BigInt b = input_BigInt();
+            t = clock();
             char* c = Decimal_Division(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The quotient is: ");
             printf("%s\n", c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1336,9 +1353,13 @@ prompt:
             printf("Enter the divisor: ");
             BigInt b = input_BigInt();
             BigInt rem;
+            t = clock();
             BigInt c = Divide(a, b, &rem);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The remainder is: ");
             print_BigInt(rem);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1349,9 +1370,13 @@ prompt:
             BigInt a = input_BigInt();
             printf("Enter the second number: ");
             BigInt b = input_BigInt();
+            t = clock();
             BigInt c = GCD(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The GCD is: ");
             print_BigInt(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1363,9 +1388,13 @@ prompt:
             printf("Enter the exponent: ");
             llu b;
             scanf("%llu", &b);
+            t = clock();
             BigInt c = Power(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The result is: ");
             print_BigInt(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1375,9 +1404,13 @@ prompt:
             printf("Enter the number: ");
             llu a;
             scanf("%llu", &a);
+            t = clock();
             BigInt c = Factorial(a);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The factorial is: ");
             print_BigInt(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1389,11 +1422,19 @@ prompt:
             int n;
             printf("Enter number of terms of Newton-Raphson Algorithm: ");
             scanf("%d", &n);
+            t = clock();
             Fraction c = Square_Root(a, n);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("Rational Equivalent of square root:\n");
             print_Fraction(c);
+            printf("Execution time: %g seconds\n", time);
+            t = clock();
             char *root = Decimal_Division(c->num, c->den);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The square root is: \n%s\n", root);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1415,9 +1456,13 @@ prompt:
             a->imag = a2;
             b->real = b1;
             b->imag = b2;
+            t = clock();
             Complex c = add_Complex(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The sum is: ");
             print_Complex(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1439,9 +1484,13 @@ prompt:
             a->imag = a2;
             b->real = b1;
             b->imag = b2;
+            t = clock();
             Complex c = subtract_Complex(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The difference is: ");
             print_Complex(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1463,9 +1512,13 @@ prompt:
             a->imag = a2;
             b->real = b1;
             b->imag = b2;
+            t = clock();
             Complex c = multiply_Complex(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The product is: ");
             print_Complex(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1487,9 +1540,13 @@ prompt:
             a->imag = a2;
             b->real = b1;
             b->imag = b2;
+            t = clock();
             Complex c = divide_Complex(a, b);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The quotient is: ");
             print_Complex(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1504,9 +1561,13 @@ prompt:
             Complex a = new_Complex();
             a->real = a1;
             a->imag = a2;
+            t = clock();
             Complex c = conjugate(a);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The conjugate is: ");
             print_Complex(c);
+            printf("Execution time: %g seconds\n", time);
             printf("\n");
             break;
         }
@@ -1521,8 +1582,13 @@ prompt:
             Complex a = new_Complex();
             a->real = a1;
             a->imag = a2;
+            t = clock();
             long double c = modulus(a);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The modulus is: %Lf\n", c);
+            printf("Execution time: %g seconds\n", time);
+            printf("\n");
             break;
         }
 
@@ -1532,10 +1598,15 @@ prompt:
             Fraction a = input_Fraction();
             printf("For second number:\n");
             Fraction b = input_Fraction();
+            t = clock();
             Fraction c = add_Fraction(a, b);
             reduce_Fraction(c);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The sum is:\n");
             print_Fraction(c);
+            printf("Execution time: %g seconds\n", time);
+            printf("\n");
             break;
         }
 
@@ -1545,10 +1616,15 @@ prompt:
             Fraction a = input_Fraction();
             printf("For second number:\n");
             Fraction b = input_Fraction();
+            t = clock();
             Fraction c = subtract_Fraction(a, b);
             reduce_Fraction(c);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The difference is:\n");
             print_Fraction(c);
+            printf("Execution time: %g seconds\n", time);
+            printf("\n");
             break;
         }
 
@@ -1558,10 +1634,15 @@ prompt:
             Fraction a = input_Fraction();
             printf("For second number:\n");
             Fraction b = input_Fraction();
+            t = clock();
             Fraction c = multiply_Fraction(a, b);
             reduce_Fraction(c);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The product is:\n");
             print_Fraction(c);
+            printf("Execution time: %g seconds\n", time);
+            printf("\n");
             break;
         }
 
@@ -1571,19 +1652,29 @@ prompt:
             Fraction a = input_Fraction();
             printf("For second number:\n");
             Fraction b = input_Fraction();
+            t = clock();
             Fraction c = divide_Fraction(a, b);
             reduce_Fraction(c);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("The quotient is:\n");
             print_Fraction(c);
+            printf("Execution time: %g seconds\n", time);
+            printf("\n");
             break;
         }
 
         case 21:
         {
             Fraction a = input_Fraction();
+            t = clock();
             reduce_Fraction(a);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("Your Fraction in simplest form:\n");
             print_Fraction(a);
+            printf("Execution time: %g seconds\n", time);
+            printf("\n");
             break;
         }
 
@@ -1595,9 +1686,13 @@ prompt:
             printf("Enter number of terms of Newton-Raphson Algorithm: ");
             scanf("%d", &n);
             printf("Computing sqrt(10005)...\n");
+            t = clock();
             sqrt_10005 = Square_Root(a, n);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("Rational Equivalent of square root computed\n");
             print_Fraction(sqrt_10005);
+            printf("Execution time: %g seconds\n", time);
             printf("Do you want to convert it to decimal and write it to a file?\n");
             printf("Note: Fraction to decimal conversion is very computationally intensive and takes a lot of time.\n");
             printf("Your choice? (y/n): ");
@@ -1612,10 +1707,14 @@ prompt:
                     printf("Error opening file\n");
                     break;
                 }
+                t = clock();
                 char *ans = Decimal_Division(sqrt_10005->num, sqrt_10005->den);
+                t = clock() - t;
+                time = ((double)t)/CLOCKS_PER_SEC;
                 fprintf(fp, "%s", ans);
                 fclose(fp);
                 printf("Sqrt(10005) =\n%s\n", ans);
+                printf("Execution time: %g seconds\n", time);
                 printf("Output Written to file\n");
             }
             printf("\n");
@@ -1628,8 +1727,12 @@ prompt:
             printf("Enter number of terms of Chudnovsky Algorithm: ");
             scanf("%d", &n);
             printf("Computing pi...\n");
+            t = clock();
             PI_Chudnovsky(n);
+            t = clock() - t;
+            time = ((double)t)/CLOCKS_PER_SEC;
             printf("Rational Equivalent of pi computed\n");
+            printf("Execution time: %g seconds\n", time);
             // print_Fraction(PI);
             printf("Do you want to convert it to decimal and write it to a file?\n");
             printf("Note: Fraction to decimal conversion is very computationally intensive and takes a lot of time.\n");
@@ -1646,10 +1749,14 @@ prompt:
                     printf("Error opening file\n");
                     break;
                 }
+                t = clock();
                 PI_str = Decimal_Division(PI->num, PI->den);
+                t = clock() - t;
+                time = ((double)t)/CLOCKS_PER_SEC;
                 fprintf(fp, "%s", PI_str);
                 fclose(fp);
                 printf("PI =\n%s\n", PI_str);
+                printf("Execution time: %g seconds\n", time);
                 printf("Output Written to file\n");
             }
             printf("\n");
@@ -1667,15 +1774,12 @@ prompt:
 
         case 25:
         {
-            printf("Exiting...");
+            printf("Exiting...\n");
             exit(0);
         }
     }
 
-    t = clock() - t;
-    double time_taken = ((double)t)/CLOCKS_PER_SEC; // in seconds
- 
-    printf("fun() took %f seconds to execute \n", time_taken);
+
 
     goto prompt;
 
