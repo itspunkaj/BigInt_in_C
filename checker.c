@@ -12,7 +12,7 @@ char *Arr;
 int main()
 {
     printf("Select one option\n");
-    printf("1.Check accuracy of sqrt(10005)\n2.Check accuracy of PI\n");
+    printf("1. Check accuracy of sqrt(10005)\n2. Check accuracy of PI\n");
     int choice;
     scanf("%d", &choice);
     switch (choice)
