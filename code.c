@@ -47,12 +47,13 @@ typedef long long ll;
 BigInt FACT[MAX_FACT];
 
 
-
 // Function prototypes
 
 int Max(int x, int y);
 int Min(int x, int y);
 
+
+// ---- BigInt functions ----
 BigInt new_BigInt(const unsigned int length);
 void set_zero(BigInt b);
 void free_BigInt(BigInt b);
@@ -76,18 +77,20 @@ void remove_preceding_zeroes(BigInt a);
 int isPrime(int n);
 int gcd(int a, int b);
 
+// ---- Complex functions ----
 Complex new_Complex();
 void print_Complex(Complex a);
 void free_Complex(Complex a);
 long double real_part(Complex a);
 long double imag_part(Complex a);
-Complex conjugate(Complex a);
 long double modulus(Complex a);
+Complex conjugate(Complex a);
 Complex add_Complex(Complex a, Complex b);
 Complex subtract_Complex(Complex a, Complex b);
 Complex multiply_Complex(Complex a, Complex b);
 Complex divide_Complex(Complex a, Complex b);
 
+// ---- Fraction functions ----
 Fraction new_Fraction();
 Fraction new_Fraction_input();
 void print_Fraction(Fraction a);
@@ -103,6 +106,7 @@ void cancel_zeroes(Fraction a);
 // Calculate the square root of a BigInt using Newton Rapson method
 Fraction Sqrt(BigInt n);
 
+// Computes value of PI using Chudnovsky algorithm
 char* Chudnovsky_algorithm(int n);
 
 
@@ -118,7 +122,7 @@ int Min(int x, int y)
 }
 
 
-
+// -------------- BigInt functions ----------------
 
 BigInt new_BigInt(const unsigned int length)
 {
@@ -766,7 +770,7 @@ int gcd(int a, int b) {
 
 
 
-
+// ---------------- Complex Functions ----------------
 
 Complex new_Complex()
 {
@@ -867,8 +871,7 @@ Complex divide_Complex(Complex a, Complex b)
 
 
 
-
-
+// ------------ Fraction Functions ------------
 
 Fraction new_Fraction()
 {
