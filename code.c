@@ -8,8 +8,8 @@
 
 unsigned int decimal_precision = 400;
 
-#define OUTPUT_SQRT_FILENAME "output_sqrt_10005.txt"
-#define OUTPUT_PI_FILENAME "output_pi.txt"
+#define OUTPUT_SQRT_FILENAME "./output_sqrt_10005.txt"
+#define OUTPUT_PI_FILENAME "./output_pi.txt"
 
 struct BigIntStruct
 {
@@ -1625,7 +1625,7 @@ prompt:
             printf("Computing pi...\n");
             PI_Chudnovsky(n);
             printf("Rational Equivalent of pi computed\n");
-            print_Fraction(PI);
+            // print_Fraction(PI);
             printf("Do you want to convert it to decimal and write it to a file?\n");
             printf("Note: Fraction to decimal conversion is very computationally intensive and takes a lot of time.\n");
             printf("Your choice? (y/n): ");
@@ -1641,10 +1641,10 @@ prompt:
                     printf("Error opening file\n");
                     break;
                 }
-                PI_str = Decimal_Division(sqrt_10005->num, sqrt_10005->den);
+                PI_str = Decimal_Division(PI->num, PI->den);
                 fprintf(fp, "%s", PI_str);
                 fclose(fp);
-                printf("Sqrt(10005) =\n%s\n", PI_str);
+                printf("PI =\n%s\n", PI_str);
                 printf("Output Written to file\n");
             }
             printf("\n");
