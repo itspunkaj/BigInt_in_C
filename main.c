@@ -1,3 +1,18 @@
+/*    
+ CS201- DSA Project 
+ Project Title : BIGINT & Calculation of PI
+ Instructor : Dr. Anil Shukla
+ Mentor : Avadhesh Gaur
+
+ Anant Prakash Singh -2021CSB1066  
+ Kartik Yadav -2021CSB1101  
+ Aditya Kumar Sahu -2021MCB1228
+
+*/
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -7,7 +22,7 @@
 #define HALFBASE 1000000000ULL
 #define MAX_FACT 10000
 
-unsigned int decimal_precision = 400;
+unsigned int decimal_precision = 3000;
 
 #define OUTPUT_SQRT_FILENAME "./output_sqrt_10005.txt"
 #define OUTPUT_PI_FILENAME "./output_pi.txt"
@@ -27,8 +42,8 @@ struct FractionStruct
 
 struct ComplexStruct
 {
-    long double real;
-    long double imag;
+    long long int real;
+    long long int imag;
 };
 
 typedef struct BigIntStruct *BigInt;
@@ -81,9 +96,9 @@ int gcd(int a, int b);
 Complex new_Complex();
 void print_Complex(Complex a);
 void free_Complex(Complex a);
-long double real_part(Complex a);
-long double imag_part(Complex a);
-long double modulus(Complex a);
+long long int real_part(Complex a);
+long long int imag_part(Complex a);
+long long int modulus(Complex a);
 Complex conjugate(Complex a);
 Complex add_Complex(Complex a, Complex b);
 Complex subtract_Complex(Complex a, Complex b);
@@ -756,16 +771,15 @@ Complex new_Complex()
 {
     Complex temp;
     temp = (Complex)malloc(sizeof(ComplexObj));
-
     return temp;
 }
 
 void print_Complex(Complex a)
 {
     if (a->imag >= 0)
-        printf("%g + %gi\n", (a->real), (a->imag));
+        printf("%lld + %lldi\n", (a->real), (a->imag));
     else
-        printf("%g - %gi\n", (a->real), -(a->imag));
+        printf("%lld - %lldi\n", (a->real), -(a->imag));
 }
 
 void free_Complex(Complex a)
@@ -773,12 +787,12 @@ void free_Complex(Complex a)
     free(a);
 }
 
-long double real_part(Complex a)
+long long int real_part(Complex a)
 {
     return a->real;
 }
 
-long double imag_part(Complex a)
+long long int imag_part(Complex a)
 {
     return a->imag;
 }
@@ -796,7 +810,7 @@ Complex conjugate(Complex a)
     return c;
 }
 
-long double modulus(Complex a)
+long long int modulus(Complex a)
 {
     return pow(a->real, 2) + pow(a->imag, 2);
 }
@@ -805,7 +819,7 @@ Complex add_Complex(Complex a, Complex b)
 {
     Complex c;
     c = new_Complex();
-    c->real = (a->real) + (b->real);
+    c->real = ((a->real) + (b->real));
     c->imag = (a->imag) + (b->imag);
     return c;
 }
@@ -1217,38 +1231,38 @@ prompt:
     printf("\t  7. GCD\n");
     printf("\t  8. Power\n");
     printf("\t  9. Factorial\n");
-    printf("\t 10. Square Root\n");
+    
     printf("\n");
 
     printf("(II)\tOperations on Complex Numbers\n");
     printf("   \t------------------------------\n");
-    printf("\t 11. Addition\n");
-    printf("\t 12. Subtraction\n");
-    printf("\t 13. Multiplication\n");
-    printf("\t 14. Division\n");
-    printf("\t 15. Conjugate\n");
-    printf("\t 16. Modulus\n");
+    printf("\t 10. Addition\n");
+    printf("\t 11. Subtraction\n");
+    printf("\t 12. Multiplication\n");
+    printf("\t 13. Division\n");
+    printf("\t 14. Conjugate\n");
+    
     printf("\n");
 
     printf("(III)\tOperations on Fractions\n");
     printf("   \t------------------------\n");
-    printf("\t 17. Addition\n");
-    printf("\t 18. Subtraction\n");
-    printf("\t 19. Multiplication\n");
-    printf("\t 20. Division\n");
-    printf("\t 21. Reduce to Simplest Form\n");
+    printf("\t 15. Addition\n");
+    printf("\t 16. Subtraction\n");
+    printf("\t 17. Multiplication\n");
+    printf("\t 18. Division\n");
+    printf("\t 19. Reduce to Simplest Form\n");
     printf("\n");
 
     printf("(IV)\tCOMPUTATION OF PI\n");
     printf("   \t-----------------\n");
-    printf("\t 22. Compute Sqrt(10005) using Newton-Raphson Algorithm\n");
-    printf("\t 23. Compute Value of PI using Chudnovsky Algorithm\n");
+    printf("\t 20. Compute Sqrt(10005) using Newton-Raphson Algorithm\n");
+    printf("\t 21. Compute Value of PI using Chudnovsky Algorithm\n");
     printf("\n");
 
     printf("(V)\tMiscellaneous\n");
     printf("   \t-------------\n");
-    printf("\t 24. Set Decimal Precision\n");
-    printf("\t 25. Exit the program\n");
+    printf("\t 22. Set Decimal Precision\n");
+    printf("\t 23. Exit the program\n");
 
     printf("===============================================================\n");
 
@@ -1415,41 +1429,18 @@ prompt:
             break;
         }
 
+        
         case 10:
         {
-            printf("Enter the number: ");
-            BigInt a = input_BigInt();
-            int n;
-            printf("Enter number of terms of Newton-Raphson Algorithm: ");
-            scanf("%d", &n);
-            t = clock();
-            Fraction c = Square_Root(a, n);
-            t = clock() - t;
-            time = ((double)t)/CLOCKS_PER_SEC;
-            printf("Rational Equivalent of square root:\n");
-            print_Fraction(c);
-            printf("Execution time: %g seconds\n", time);
-            t = clock();
-            char *root = Decimal_Division(c->num, c->den);
-            t = clock() - t;
-            time = ((double)t)/CLOCKS_PER_SEC;
-            printf("The square root is: \n%s\n", root);
-            printf("Execution time: %g seconds\n", time);
-            printf("\n");
-            break;
-        }
-
-        case 11:
-        {
-            long double a1, a2, b1, b2;
+            long long int a1, a2, b1, b2;
             printf("Enter the real part of first number: ");
-            scanf("%Lf", &a1);
+            scanf("%lld", &a1);
             printf("Enter the imaginary part of first number: ");
-            scanf("%Lf", &a2);
+            scanf("%lld", &a2);
             printf("Enter the real part of second number: ");
-            scanf("%Lf", &b1);
+            scanf("%lld", &b1);
             printf("Enter the imaginary part of second number: ");
-            scanf("%Lf", &b2);
+            scanf("%lld", &b2);
             Complex a = new_Complex();
             Complex b = new_Complex();
             a->real = a1;
@@ -1467,17 +1458,17 @@ prompt:
             break;
         }
 
-        case 12:
+        case 11:
         {
-            long double a1, a2, b1, b2;
+            long long int a1, a2, b1, b2;
             printf("Enter the real part of first number: ");
-            scanf("%Lf", &a1);
+            scanf("%lld", &a1);
             printf("Enter the imaginary part of first number: ");
-            scanf("%Lf", &a2);
+            scanf("%lld", &a2);
             printf("Enter the real part of second number: ");
-            scanf("%Lf", &b1);
+            scanf("%lld", &b1);
             printf("Enter the imaginary part of second number: ");
-            scanf("%Lf", &b2);
+            scanf("%lld", &b2);
             Complex a = new_Complex();
             Complex b = new_Complex();
             a->real = a1;
@@ -1495,17 +1486,17 @@ prompt:
             break;
         }
 
-        case 13:
+        case 12:
         {
-            long double a1, a2, b1, b2;
+            long long int a1, a2, b1, b2;
             printf("Enter the real part of first number: ");
-            scanf("%Lf", &a1);
+            scanf("%lld", &a1);
             printf("Enter the imaginary part of first number: ");
-            scanf("%Lf", &a2);
+            scanf("%lld", &a2);
             printf("Enter the real part of second number: ");
-            scanf("%Lf", &b1);
+            scanf("%lld", &b1);
             printf("Enter the imaginary part of second number: ");
-            scanf("%Lf", &b2);
+            scanf("%lld", &b2);
             Complex a = new_Complex();
             Complex b = new_Complex();
             a->real = a1;
@@ -1523,17 +1514,17 @@ prompt:
             break;
         }
 
-        case 14:
+        case 13:
         {
-            long double a1, a2, b1, b2;
+            long long int a1, a2, b1, b2;
             printf("Enter the real part of first number: ");
-            scanf("%Lf", &a1);
+            scanf("%lld", &a1);
             printf("Enter the imaginary part of first number: ");
-            scanf("%Lf", &a2);
+            scanf("%lld", &a2);
             printf("Enter the real part of second number: ");
-            scanf("%Lf", &b1);
+            scanf("%lld", &b1);
             printf("Enter the imaginary part of second number: ");
-            scanf("%Lf", &b2);
+            scanf("%lld", &b2);
             Complex a = new_Complex();
             Complex b = new_Complex();
             a->real = a1;
@@ -1551,13 +1542,13 @@ prompt:
             break;
         }
 
-        case 15:
+        case 14:
         {
-            long double a1, a2;
+            long long int a1, a2;
             printf("Enter the real part of the number: ");
-            scanf("%Lf", &a1);
+            scanf("%lld", &a1);
             printf("Enter the imaginary part of the number: ");
-            scanf("%Lf", &a2);
+            scanf("%lld", &a2);
             Complex a = new_Complex();
             a->real = a1;
             a->imag = a2;
@@ -1572,27 +1563,8 @@ prompt:
             break;
         }
 
-        case 16:
-        {
-            long double a1, a2;
-            printf("Enter the real part of the number: ");
-            scanf("%Lf", &a1);
-            printf("Enter the imaginary part of the number: ");
-            scanf("%Lf", &a2);
-            Complex a = new_Complex();
-            a->real = a1;
-            a->imag = a2;
-            t = clock();
-            long double c = modulus(a);
-            t = clock() - t;
-            time = ((double)t)/CLOCKS_PER_SEC;
-            printf("The modulus is: %Lf\n", c);
-            printf("Execution time: %g seconds\n", time);
-            printf("\n");
-            break;
-        }
 
-        case 17:
+        case 15:
         {
             printf("For first number:\n");
             Fraction a = input_Fraction();
@@ -1610,7 +1582,7 @@ prompt:
             break;
         }
 
-        case 18:
+        case 16:
         {
             printf("For first number:\n");
             Fraction a = input_Fraction();
@@ -1628,7 +1600,7 @@ prompt:
             break;
         }
 
-        case 19:
+        case 17:
         {
             printf("For first number:\n");
             Fraction a = input_Fraction();
@@ -1646,7 +1618,7 @@ prompt:
             break;
         }
 
-        case 20:
+        case 18:
         {
             printf("For first number:\n");
             Fraction a = input_Fraction();
@@ -1664,7 +1636,7 @@ prompt:
             break;
         }
 
-        case 21:
+        case 19:
         {
             Fraction a = input_Fraction();
             t = clock();
@@ -1678,7 +1650,7 @@ prompt:
             break;
         }
 
-        case 22:
+        case 20:
         {
             BigInt a = new_BigInt(1);
             a->d[0] = 10005;
@@ -1721,7 +1693,7 @@ prompt:
             break;
         }
 
-        case 23:
+        case 21:
         {
             int n;
             printf("Enter number of terms of Chudnovsky Algorithm: ");
@@ -1764,7 +1736,7 @@ prompt:
 
         }
         
-        case 24:
+        case 22:
         {
             printf("Enter new precision for decimal conversion: ");
             scanf("%d", &decimal_precision);
@@ -1772,10 +1744,15 @@ prompt:
             break;
         }
 
-        case 25:
+        case 23:
         {
             printf("Exiting...\n");
             exit(0);
+        }
+
+        default :
+        {
+            printf("Invalid choice , please enter a correct choice\n");
         }
     }
 
