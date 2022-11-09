@@ -87,7 +87,7 @@ Complex divide_Complex(Complex a, Complex b);
 
 // ---- Fraction functions ----
 Fraction new_Fraction();
-Fraction new_Fraction_input();
+Fraction input_Fraction();
 void print_Fraction(Fraction a);
 void reduce_Fraction(Fraction a);
 Fraction add_Fraction(Fraction a, Fraction b);
@@ -99,7 +99,7 @@ void free_Fraction(Fraction a);
 void cancel_zeroes(Fraction a);
 
 // Calculate the square root of a BigInt using Newton Rapson method
-Fraction Sqrt(BigInt k, int n);
+Fraction Square_Root(BigInt k, int n);
 
 // Computes value of PI using Chudnovsky algorithm
 void PI_Chudnovsky(int n);
@@ -163,7 +163,7 @@ void print_BigInt(BigInt b)
     printf("\n");
 }
 
-BigInt take_input() // function to take input from user by string
+BigInt input_BigInt() // function to take input from user by string
 {
     char *arr;
     arr = (char *)malloc(2 * sizeof(char));
@@ -839,11 +839,13 @@ Fraction new_Fraction()
     return c;
 }
 
-Fraction new_Fraction_input()
+Fraction input_Fraction()
 {
     Fraction c;
-    BigInt a = take_input();
-    BigInt b = take_input();
+    printf("Enter Numerator: ");
+    BigInt a = input_BigInt();
+    printf("Enter Denominator: ");
+    BigInt b = input_BigInt();
 
     c = (Fraction)malloc(sizeof(FractionObj));
 
@@ -982,29 +984,39 @@ void cancel_zeroes(Fraction a)
     a->den->len -= cnt;
 }
 
-Fraction Sqrt(BigInt k, int n)
+Fraction Square_Root(BigInt k, int n)
 {
     // Calculate the square root of a BigInt using Newton Rapson method
 
     Fraction x = new_Fraction();
     // free_BigInt(x->num);
 
-    // x->num = new_BigInt(1);
-    // x->num->d[0] = 2050048640064001ULL;
-    // x->den = new_BigInt(1);
-    // x->den->d[0] = 20495363200160ULL;
+    if (k->len == 1 && k->d[0] == 10005)
+    {
+        // x->num = new_BigInt(1);
+        // x->num->d[0] = 2050048640064001ULL;
+        // x->den = new_BigInt(1);
+        // x->den->d[0] = 20495363200160ULL;
 
-    x->num = new_BigInt(4);
-    x->num->d[0] = 38194350081024001ULL;
-    x->num->d[1] = 947199942084943826ULL;
-    x->num->d[2] = 764652037898659122ULL;
-    x->num->d[3] = 141301459ULL;
+        x->num = new_BigInt(4);
+        x->num->d[0] = 38194350081024001ULL;
+        x->num->d[1] = 947199942084943826ULL;
+        x->num->d[2] = 764652037898659122ULL;
+        x->num->d[3] = 141301459ULL;
 
-    x->den = new_BigInt(4);
-    x->den->d[0] = 118368174297600640ULL;
-    x->den->d[1] = 1550394278198635ULL;
-    x->den->d[2] = 476412055532869542ULL;
-    x->den->d[3] = 1412661ULL;
+        x->den = new_BigInt(4);
+        x->den->d[0] = 118368174297600640ULL;
+        x->den->d[1] = 1550394278198635ULL;
+        x->den->d[2] = 476412055532869542ULL;
+        x->den->d[3] = 1412661ULL;
+    }
+    else
+    {
+        x->num = new_BigInt(1);
+        x->num->d[0] = 2;
+        x->den = new_BigInt(1);
+        x->den->d[0] = 1;
+    }
 
     Fraction temp, temp1, f, df;
     Fraction two = new_Fraction();
@@ -1082,7 +1094,7 @@ void PI_Chudnovsky(int n)
     printf("Computing sqrt(10005)...\n");
     BigInt _10005 = new_BigInt(1);
     _10005->d[0] = 10005;
-    sqrt_10005 = Sqrt(_10005, 4);
+    sqrt_10005 = Square_Root(_10005, 4);
     printf("sqrt(10005) computed\n");
 
     printf("Computing term    ");
@@ -1165,49 +1177,379 @@ prompt:
 
     printf("(I)\tBasic Operations on Big Integers\n");
     printf("   \t--------------------------------\n");
-    printf("\t 1. Addition\n");
-    printf("\t 2. Subtraction\n");
-    printf("\t 3. Multiplication\n");
-    printf("\t 4. Division\n");
-    printf("\t 5. Decimal Division\n");
-    printf("\t 6. Remainder (Modulo)\n");
-    printf("\t 7. GCD\n");
-    printf("\t 8. Power\n");
-    printf("\t 9. Factorial\n");
-    printf("\t10. Square Root\n");
+    printf("\t  1. Addition\n");
+    printf("\t  2. Subtraction\n");
+    printf("\t  3. Multiplication\n");
+    printf("\t  4. Division\n");
+    printf("\t  5. Decimal Division\n");
+    printf("\t  6. Remainder (Modulo)\n");
+    printf("\t  7. GCD\n");
+    printf("\t  8. Power\n");
+    printf("\t  9. Factorial\n");
+    printf("\t 10. Square Root\n");
     printf("\n");
 
     printf("(II)\tOperations on Complex Numbers\n");
     printf("   \t------------------------------\n");
-    printf("\t11. Addition\n");
-    printf("\t12. Subtraction\n");
-    printf("\t13. Multiplication\n");
-    printf("\t14. Division\n");
-    printf("\t15. Conjugate\n");
-    printf("\t16. Modulus\n");
+    printf("\t 11. Addition\n");
+    printf("\t 12. Subtraction\n");
+    printf("\t 13. Multiplication\n");
+    printf("\t 14. Division\n");
+    printf("\t 15. Conjugate\n");
+    printf("\t 16. Modulus\n");
     printf("\n");
 
     printf("(III)\tOperations on Fractions\n");
     printf("   \t------------------------\n");
-    printf("\t17. Addition\n");
-    printf("\t18. Subtraction\n");
-    printf("\t19. Multiplication\n");
-    printf("\t20. Division\n");
-    printf("\t21. Reduce to Simplest Form\n");
+    printf("\t 17. Addition\n");
+    printf("\t 18. Subtraction\n");
+    printf("\t 19. Multiplication\n");
+    printf("\t 20. Division\n");
+    printf("\t 21. Reduce to Simplest Form\n");
     printf("\n");
 
     printf("(IV)\tCOMPUTATION OF PI\n");
     printf("   \t-----------------\n");
-    printf("\t22. Compute Sqrt(10005) using Newton-Raphson Algorithm\n");
-    printf("\t23. Compute Value of PI using Chudnovsky Algorithm\n");
+    printf("\t 22. Compute Sqrt(10005) using Newton-Raphson Algorithm\n");
+    printf("\t 23. Compute Value of PI using Chudnovsky Algorithm\n");
     printf("\n");
 
-    printf("(V)\tSettings\n");
-    printf("   \t---------\n");
-    printf("\t24. Set Decimal Precision\n");
-    printf("\t25. Exit the program\n");
+    printf("(V)\tMiscellaneous\n");
+    printf("   \t-------------\n");
+    printf("\t 24. Set Decimal Precision\n");
+    printf("\t 25. Exit the program\n");
 
     printf("===============================================================\n");
+
+
+    printf("\nEnter your choice: ");
+    scanf("%d", &choice);
+
+    switch (choice)
+    {
+        case 1:
+        {
+            printf("Enter the first number: ");
+            BigInt a = input_BigInt();
+            printf("Enter the second number: ");
+            BigInt b = input_BigInt();
+            BigInt c = Add(a, b);
+            printf("The sum is: ");
+            print_BigInt(c);
+            printf("\n");
+            break;
+        }
+
+        case 2:
+        {
+            printf("Enter the first number: ");
+            BigInt a = input_BigInt();
+            printf("Enter the second number: ");
+            BigInt b = input_BigInt();
+            BigInt c = Subtract(a, b);
+            printf("The difference is: ");
+            print_BigInt(c);
+            printf("\n");
+            break;
+        }
+
+        case 3:
+        {
+            printf("Enter the first number: ");
+            BigInt a = input_BigInt();
+            printf("Enter the second number: ");
+            BigInt b = input_BigInt();
+            BigInt c = Multiply(a, b);
+            printf("The product is: ");
+            print_BigInt(c);
+            printf("\n");
+            break;
+        }
+
+        case 4:
+        {
+            printf("Enter the dividend: ");
+            BigInt a = input_BigInt();
+            printf("Enter the divisor: ");
+            BigInt b = input_BigInt();
+            BigInt rem;
+            BigInt c = Divide(a, b, &rem);
+            printf("The quotient is: ");
+            print_BigInt(c);
+            printf("The remainder is: ");
+            print_BigInt(rem);
+            printf("\n");
+            break;
+        }
+
+        case 5:
+        {
+            printf("Enter the dividend: ");
+            BigInt a = input_BigInt();
+            printf("Enter the divisor: ");
+            BigInt b = input_BigInt();
+            char* c = Decimal_Division(a, b);
+            printf("The quotient is: ");
+            printf("%s\n", c);
+            printf("\n");
+            break;
+        }
+
+        case 6:
+        {
+            printf("Enter the dividend: ");
+            BigInt a = input_BigInt();
+            printf("Enter the divisor: ");
+            BigInt b = input_BigInt();
+            BigInt rem;
+            BigInt c = Divide(a, b, &rem);
+            printf("The remainder is: ");
+            print_BigInt(rem);
+            printf("\n");
+            break;
+        }
+
+        case 7:
+        {
+            printf("Enter the first number: ");
+            BigInt a = input_BigInt();
+            printf("Enter the second number: ");
+            BigInt b = input_BigInt();
+            BigInt c = GCD(a, b);
+            printf("The GCD is: ");
+            print_BigInt(c);
+            printf("\n");
+            break;
+        }
+
+        case 8:
+        {
+            printf("Enter the base: ");
+            BigInt a = input_BigInt();
+            printf("Enter the exponent: ");
+            llu b;
+            scanf("%llu", &b);
+            BigInt c = Power(a, b);
+            printf("The result is: ");
+            print_BigInt(c);
+            printf("\n");
+            break;
+        }
+
+        case 9:
+        {
+            printf("Enter the number: ");
+            llu a;
+            scanf("%llu", &a);
+            BigInt c = Factorial(a);
+            printf("The factorial is: ");
+            print_BigInt(c);
+            printf("\n");
+            break;
+        }
+
+        case 10:
+        {
+            printf("Enter the number: ");
+            BigInt a = input_BigInt();
+            int n;
+            printf("Enter number of terms of Newton-Raphson Algorithm: ");
+            scanf("%d", &n);
+            Fraction c = Square_Root(a, n);
+            printf("Rational Equivalent of square root:\n");
+            print_Fraction(c);
+            char *root = Decimal_Division(c->num, c->den);
+            printf("The square root is: \n%s\n", root);
+            print_Fraction(c);
+            printf("\n");
+            break;
+        }
+
+        case 11:
+        {
+            long double a1, a2, b1, b2;
+            printf("Enter the real part of first number: ");
+            scanf("%Lf", &a1);
+            printf("Enter the imaginary part of first number: ");
+            scanf("%Lf", &a2);
+            printf("Enter the real part of second number: ");
+            scanf("%Lf", &b1);
+            printf("Enter the imaginary part of second number: ");
+            scanf("%Lf", &b2);
+            Complex a = new_Complex();
+            Complex b = new_Complex();
+            a->real = a1;
+            a->imag = a2;
+            b->real = b1;
+            b->imag = b2;
+            Complex c = add_Complex(a, b);
+            printf("The sum is: ");
+            print_Complex(c);
+            printf("\n");
+            break;
+        }
+
+        case 12:
+        {
+            long double a1, a2, b1, b2;
+            printf("Enter the real part of first number: ");
+            scanf("%Lf", &a1);
+            printf("Enter the imaginary part of first number: ");
+            scanf("%Lf", &a2);
+            printf("Enter the real part of second number: ");
+            scanf("%Lf", &b1);
+            printf("Enter the imaginary part of second number: ");
+            scanf("%Lf", &b2);
+            Complex a = new_Complex();
+            Complex b = new_Complex();
+            a->real = a1;
+            a->imag = a2;
+            b->real = b1;
+            b->imag = b2;
+            Complex c = subtract_Complex(a, b);
+            printf("The difference is: ");
+            print_Complex(c);
+            printf("\n");
+            break;
+        }
+
+        case 13:
+        {
+            long double a1, a2, b1, b2;
+            printf("Enter the real part of first number: ");
+            scanf("%Lf", &a1);
+            printf("Enter the imaginary part of first number: ");
+            scanf("%Lf", &a2);
+            printf("Enter the real part of second number: ");
+            scanf("%Lf", &b1);
+            printf("Enter the imaginary part of second number: ");
+            scanf("%Lf", &b2);
+            Complex a = new_Complex();
+            Complex b = new_Complex();
+            a->real = a1;
+            a->imag = a2;
+            b->real = b1;
+            b->imag = b2;
+            Complex c = multiply_Complex(a, b);
+            printf("The product is: ");
+            print_Complex(c);
+            printf("\n");
+            break;
+        }
+
+        case 14:
+        {
+            long double a1, a2, b1, b2;
+            printf("Enter the real part of first number: ");
+            scanf("%Lf", &a1);
+            printf("Enter the imaginary part of first number: ");
+            scanf("%Lf", &a2);
+            printf("Enter the real part of second number: ");
+            scanf("%Lf", &b1);
+            printf("Enter the imaginary part of second number: ");
+            scanf("%Lf", &b2);
+            Complex a = new_Complex();
+            Complex b = new_Complex();
+            a->real = a1;
+            a->imag = a2;
+            b->real = b1;
+            b->imag = b2;
+            Complex c = divide_Complex(a, b);
+            printf("The quotient is: ");
+            print_Complex(c);
+            printf("\n");
+            break;
+        }
+
+        case 15:
+        {
+            long double a1, a2;
+            printf("Enter the real part of the number: ");
+            scanf("%Lf", &a1);
+            printf("Enter the imaginary part of the number: ");
+            scanf("%Lf", &a2);
+            Complex a = new_Complex();
+            a->real = a1;
+            a->imag = a2;
+            Complex c = conjugate(a);
+            printf("The conjugate is: ");
+            print_Complex(c);
+            printf("\n");
+            break;
+        }
+
+        case 16:
+        {
+            long double a1, a2;
+            printf("Enter the real part of the number: ");
+            scanf("%Lf", &a1);
+            printf("Enter the imaginary part of the number: ");
+            scanf("%Lf", &a2);
+            Complex a = new_Complex();
+            a->real = a1;
+            a->imag = a2;
+            long double c = modulus(a);
+            printf("The modulus is: %Lf\n", c);
+            break;
+        }
+
+        case 17:
+        {
+            printf("For first number:\n");
+            Fraction a = input_Fraction();
+            printf("For second number:\n");
+            Fraction b = input_Fraction();
+            Fraction c = add_Fraction(a, b);
+            printf("The sum is:\n");
+            print_Fraction(c);
+        }
+
+        case 18:
+        {
+            printf("For first number:\n");
+            Fraction a = input_Fraction();
+            printf("For second number:\n");
+            Fraction b = input_Fraction();
+            Fraction c = subtract_Fraction(a, b);
+            printf("The difference is:\n");
+            print_Fraction(c);
+        }
+
+        case 19:
+        {
+            printf("For first number:\n");
+            Fraction a = input_Fraction();
+            printf("For second number:\n");
+            Fraction b = input_Fraction();
+            Fraction c = multiply_Fraction(a, b);
+            printf("The product is:\n");
+            print_Fraction(c);
+        }
+
+        case 20:
+        {
+            printf("For first number:\n");
+            Fraction a = input_Fraction();
+            printf("For second number:\n");
+            Fraction b = input_Fraction();
+            Fraction c = divide_Fraction(a, b);
+            printf("The quotient is:\n");
+            print_Fraction(c);
+        }
+
+        case 21:
+        {
+            Fraction a = input_Fraction();
+            reduce_Fraction(a);
+            printf("Your Fraction in simplest form:\n");
+            print_Fraction(a);
+        }
+
+        
+
+
+    }
+
 
 
     return 0;
