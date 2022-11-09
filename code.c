@@ -44,7 +44,11 @@ typedef struct FractionStruct  FractionObj;
 typedef unsigned long long llu;
 typedef long long ll;
 
+
+
 BigInt FACT[MAX_FACT];
+Fraction sqrt_10005;
+
 
 
 // Function prototypes
@@ -937,7 +941,6 @@ Fraction add_Fraction(Fraction a, Fraction b)
     // BigInt d = Divide(a->den, g, &rem);
     // c->den = Multiply(b->den, d);
 
-
     // free_BigInt(a1);
     // free_BigInt(b1);
     // free_BigInt(d);
@@ -964,7 +967,6 @@ Fraction subtract_Fraction(Fraction a, Fraction b)
 
     // BigInt d = Divide(a->den, g, &rem);
     // c->den = Multiply(b->den, d);
-
 
     // free_BigInt(a1);
     // free_BigInt(b1);
@@ -1049,12 +1051,7 @@ Fraction Sqrt(BigInt n)
     
     Fraction x = new_Fraction();
     // free_BigInt(x->num);
-    
-    // x->num = new_BigInt(1);
-    // x->num->d[0] = 2;
-    // x->den = new_BigInt(1);
-    // x->den->d[0] = 1;
-    
+
     // x->num = new_BigInt(1);
     // x->num->d[0] = 2050048640064001ULL;
     // x->den = new_BigInt(1);
@@ -1083,8 +1080,6 @@ Fraction Sqrt(BigInt n)
     nn->num = n;
     nn->den->d[0] = 1;
 
-    // print_Fraction(nn);
-
     for (int i = 0; i < 2; i++)
     {
         f = multiply_Fraction(x, x);
@@ -1095,28 +1090,10 @@ Fraction Sqrt(BigInt n)
         temp = divide_Fraction(f, df);
         temp1 = x;
         x = subtract_Fraction(x, temp);
-        // free_Fraction(temp);
-        // free_Fraction(temp1);
-        // free_Fraction(df);
-        // free_Fraction(f);
 
         cancel_zeroes(x);
         reduce_Fraction(x);
         
-        // f = multiply_Fraction(x, x);
-        // temp = f;
-        // f = subtract_Fraction(f, nn);
-        // free_Fraction(temp);
-        // df = multiply_Fraction(x, two);
-        // temp = divide_Fraction(f, df);
-        // temp1 = x;
-        // x = subtract_Fraction(x, temp);
-        // free_Fraction(temp);
-        // free_Fraction(temp1);
-        // free_Fraction(df);
-        // free_Fraction(f);
-
-
     }
     // reduce_Fraction(x);
     return x;
@@ -1171,8 +1148,7 @@ char* Chudnovsky_algorithm(int n)
     printf("Computing sqrt(10005)...\n");
     BigInt _10005 = new_BigInt(1);
     _10005->d[0] = 10005;
-    Fraction sqrt_10005 = Sqrt(_10005);
-    // print_Fraction(sqrt_10005);
+    sqrt_10005 = Sqrt(_10005);
     printf("sqrt(10005) computed\n");
 
     printf("Computing term    ");
@@ -1201,7 +1177,6 @@ char* Chudnovsky_algorithm(int n)
             temp = SUM0;
             SUM0 = add_Fraction(SUM0, T);
             cancel_zeroes(SUM0);
-            // if (i % 50 == 0) reduce_Fraction(SUM0);
             // free_Fraction(temp);
         }
         else
@@ -1209,48 +1184,38 @@ char* Chudnovsky_algorithm(int n)
             temp = SUM1;
             SUM1 = add_Fraction(SUM1, T);
             cancel_zeroes(SUM1);
-            // if (i % 50 == 0) reduce_Fraction(SUM1);
             // free_Fraction(temp);
         }
 
-        // SUM = add_Fraction(SUM, T);
+
         cancel_zeroes(M);
         // reduce_Fraction(M);
+        
+        // if (i % 50 == 0)
+        // {
+        //     reduce_Fraction(M);
+        //     reduce_Fraction(SUM0);
+        //     reduce_Fraction(SUM1);
+        // }
     }
 
     printf("... Done!\nCalculating SUM of terms...\n");
-
-    // printf("\nSUM0 = \n");
-    // print_Fraction(SUM0);
-
-    // printf("\nSUM1 = \n");
-    // print_Fraction(SUM1);
 
     Fraction SUM = subtract_Fraction(SUM0, SUM1);
 
     printf("SUM of terms calculated\n");
 
-    // printf("\nSUM = \n");
-    // print_Fraction(SUM);
-
-    // printf("\n");
-
     reciprocal_Fraction(SUM);
     cancel_zeroes(SUM);
     // reduce_Fraction(SUM);
 
-    // print_Fraction(SUM);
-
     Fraction PI = multiply_Fraction(SUM, sqrt_10005);
     PI->num = Multiply(PI->num, c);
-    // PI->num->sign = 1;
-    // PI->den->sign = 1;
+
 
     cancel_zeroes(PI);
 
     // reduce_Fraction(PI);
-
-    // print_Fraction(PI);
 
     printf("Now computing decimal value of PI...\n");
 
@@ -1264,70 +1229,6 @@ char* Chudnovsky_algorithm(int n)
 
 int main()
 {
-    // printf("Enter two number for multiplication\n");
-    
-    // BigInt x = new_BigInt(1);
-    // x->d[0] = 10005;
-    // print_Fraction(Sqrt(x));
-    
-    // BigInt y = take_input();
-    // print_BigInt(y);
-    // BigInt z = take_input();
-    // print_BigInt(z);
-
-    // Fraction ans = Sqrt(x);
-    // print_Fraction(ans);
-
-
-    // char *ans = Decimal_Division(y, z);
-    // printf("%s\n", ans);
-
-
-
-    char *pi = Chudnovsky_algorithm(50);
-    printf("%s\n", pi);
-
-
-    // printf("%d ", Compare(y, z));
-    // BigInt ans=factorial(10000);
-    // print_BigInt(ans);
-    // // printf("Your answer after multiplication is \n");
-    
-    // BigInt rem;
-    // BigInt ans = Divide(y, z, &rem);
-    // printf("Quotient: ");
-    // print_BigInt(ans);
-    // printf("Remainder: ");
-    // print_BigInt(rem);
-
-    // BigInt ans = GCD(y, z);
-    // printf("GCD: ");
-    // print_BigInt(ans);
-
-
-    // Complex n1,n2;
-    // long double x1=1.00,x2=2.00,x3.00=4,x4.00=5;
-    // scanf("%Lf%Lf%Lf%Lf",&x1,&x2,&x3,&x4);
-
-    // n1 = new_comp();
-    // n2 = new_comp();
-    // (n1->real) = 2;
-    // (n2->real) = 4;
-
-    // (n1->imag) = 3;
-    // (n2->imag) = 7;
-
-    // print_Comp(n1);
-    // print_Comp(n2);
-    // Complex n3 = (Complex)malloc(sizeof(ComplexObj));
-    // n3 = divide_complex(n1, n2);
-
-    // print_Comp(n3);
-    // // print_Comp(modulus(n1));
-    // printf("%d\n", modulus(n1));
-    // print_Comp(conjugate(n3));
-
-    // printf("%d\n", x->len);
 
     
 
