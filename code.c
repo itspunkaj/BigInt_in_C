@@ -8,6 +8,9 @@
 
 unsigned int decimal_precision = 400;
 
+#define OUTPUT_SQRT_FILENAME "output_sqrt_10005.txt"
+#define OUTPUT_PI_FILENAME "output_pi.txt"
+
 struct BigIntStruct
 {
     short int sign;
@@ -40,7 +43,8 @@ typedef unsigned long long llu;
 typedef long long ll;
 
 BigInt FACT[MAX_FACT];
-Fraction sqrt_10005;
+Fraction sqrt_10005 = NULL;
+Fraction PI;
 char *PI_str;
 
 // Function prototypes
@@ -171,6 +175,12 @@ BigInt input_BigInt() // function to take input from user by string
     int szalloc = 2;
     char c = ' ';
     int sgn = 1;
+    // Removing whitespaces from the input buffer
+    while (c == ' ' || c == '\n') {
+        c = getchar();
+    }
+    ungetc(c, stdin);
+
     while (c != '\n')
     {
         if (count == szalloc - 1)
@@ -990,9 +1000,11 @@ Fraction Square_Root(BigInt k, int n)
 
     Fraction x = new_Fraction();
     // free_BigInt(x->num);
+    int flag = 0;
 
     if (k->len == 1 && k->d[0] == 10005)
     {
+        flag = 1;
         // x->num = new_BigInt(1);
         // x->num->d[0] = 2050048640064001ULL;
         // x->den = new_BigInt(1);
@@ -1030,8 +1042,17 @@ Fraction Square_Root(BigInt k, int n)
     nn->num = k;
     nn->den->d[0] = 1;
 
+    if (flag)
+    {
+        printf("Computing term:    ");
+    }
+
     for (int i = 0; i < n; i++)
     {
+        if (flag)
+        {
+            printf("\b\b\b%3d", i);
+        }
         f = multiply_Fraction(x, x);
         temp = f;
         f = subtract_Fraction(f, nn);
@@ -1043,6 +1064,10 @@ Fraction Square_Root(BigInt k, int n)
 
         cancel_zeroes(x);
         reduce_Fraction(x);
+    }
+    if (flag)
+    {
+        printf("... Done!\nRoot 10005 calculated!\n");
     }
     // reduce_Fraction(x);
     return x;
@@ -1091,11 +1116,15 @@ void PI_Chudnovsky(int n)
     SUM1->num->d[0] = 0;
     SUM1->den->d[0] = 1;
 
-    printf("Computing sqrt(10005)...\n");
-    BigInt _10005 = new_BigInt(1);
-    _10005->d[0] = 10005;
-    sqrt_10005 = Square_Root(_10005, 4);
-    printf("sqrt(10005) computed\n");
+    if (sqrt_10005 == NULL)
+    {
+        printf("Chudnovsky formula requires square root of 10005 to be calculated first.\n");
+        printf("Computing sqrt(10005)...\n");
+        BigInt _10005 = new_BigInt(1);
+        _10005->d[0] = 10005;
+        sqrt_10005 = Square_Root(_10005, 4);
+        printf("sqrt(10005) computed\n");
+    }
 
     printf("Computing term    ");
 
@@ -1154,16 +1183,16 @@ void PI_Chudnovsky(int n)
     cancel_zeroes(SUM);
     // reduce_Fraction(SUM);
 
-    Fraction PI = multiply_Fraction(SUM, sqrt_10005);
+    PI = multiply_Fraction(SUM, sqrt_10005);
     PI->num = Multiply(PI->num, c);
 
     cancel_zeroes(PI);
 
     // reduce_Fraction(PI);
 
-    printf("Now computing decimal value of PI...\n");
+    // printf("Now computing decimal value of PI...\n");
 
-    PI_str = Decimal_Division(PI->num, PI->den);
+    // PI_str = Decimal_Division(PI->num, PI->den);
 }
 
 int main()
@@ -1360,7 +1389,6 @@ prompt:
             print_Fraction(c);
             char *root = Decimal_Division(c->num, c->den);
             printf("The square root is: \n%s\n", root);
-            print_Fraction(c);
             printf("\n");
             break;
         }
@@ -1500,8 +1528,10 @@ prompt:
             printf("For second number:\n");
             Fraction b = input_Fraction();
             Fraction c = add_Fraction(a, b);
+            reduce_Fraction(c);
             printf("The sum is:\n");
             print_Fraction(c);
+            break;
         }
 
         case 18:
@@ -1511,8 +1541,10 @@ prompt:
             printf("For second number:\n");
             Fraction b = input_Fraction();
             Fraction c = subtract_Fraction(a, b);
+            reduce_Fraction(c);
             printf("The difference is:\n");
             print_Fraction(c);
+            break;
         }
 
         case 19:
@@ -1522,8 +1554,10 @@ prompt:
             printf("For second number:\n");
             Fraction b = input_Fraction();
             Fraction c = multiply_Fraction(a, b);
+            reduce_Fraction(c);
             printf("The product is:\n");
             print_Fraction(c);
+            break;
         }
 
         case 20:
@@ -1533,8 +1567,10 @@ prompt:
             printf("For second number:\n");
             Fraction b = input_Fraction();
             Fraction c = divide_Fraction(a, b);
+            reduce_Fraction(c);
             printf("The quotient is:\n");
             print_Fraction(c);
+            break;
         }
 
         case 21:
@@ -1543,11 +1579,78 @@ prompt:
             reduce_Fraction(a);
             printf("Your Fraction in simplest form:\n");
             print_Fraction(a);
+            break;
         }
 
-        
+        case 22:
+        {
+            BigInt a = new_BigInt(1);
+            a->d[0] = 10005;
+            int n;
+            printf("Enter number of terms of Newton-Raphson Algorithm: ");
+            scanf("%d", &n);
+            printf("Computing sqrt(10005)...\n");
+            sqrt_10005 = Square_Root(a, n);
+            printf("Rational Equivalent of square root computed\n");
+            print_Fraction(sqrt_10005);
+            printf("Do you want to convert it to decimal and write it to a file?\n");
+            printf("Note: Fraction to decimal conversion is very computationally intensive and takes a lot of time.\n");
+            printf("Your choice? (y/n): ");
+            char ch;
+            scanf(" %c", &ch);
+            ch |= ' ';
+            if(ch == 'y')
+            {
+                FILE *fp = fopen(OUTPUT_SQRT_FILENAME, "w");
+                if(fp == NULL)
+                {
+                    printf("Error opening file\n");
+                    break;
+                }
+                char *ans = Decimal_Division(sqrt_10005->num, sqrt_10005->den);
+                fprintf(fp, "%s", ans);
+                fclose(fp);
+                printf("Sqrt(10005) =\n%s\n", ans);
+                printf("Output Written to file\n");
+            }
+            printf("\n");
+            break;
+        }
 
+        case 23:
+        {
+            int n;
+            printf("Enter number of terms of Chudnovsky Algorithm: ");
+            scanf("%d", &n);
+            printf("Computing pi...\n");
+            PI_Chudnovsky(n);
+            printf("Rational Equivalent of pi computed\n");
+            print_Fraction(PI);
+            printf("Do you want to convert it to decimal and write it to a file?\n");
+            printf("Note: Fraction to decimal conversion is very computationally intensive and takes a lot of time.\n");
+            printf("Your choice? (y/n): ");
+            char ch;
+            scanf(" %c", &ch);
+            ch |= ' ';
 
+            if(ch == 'y')
+            {
+                FILE *fp = fopen(OUTPUT_PI_FILENAME, "w");
+                if(fp == NULL)
+                {
+                    printf("Error opening file\n");
+                    break;
+                }
+                PI_str = Decimal_Division(sqrt_10005->num, sqrt_10005->den);
+                fprintf(fp, "%s", PI_str);
+                fclose(fp);
+                printf("Sqrt(10005) =\n%s\n", PI_str);
+                printf("Output Written to file\n");
+            }
+            printf("\n");
+            break;
+
+        }
     }
 
 
