@@ -37,7 +37,7 @@ typedef unsigned long long llu;
 typedef long long ll;
 
 
-unsigned int decimal_precision = 4000;
+unsigned int decimal_precision = 400;
 
 
 #define MAX_FACT 10000
@@ -453,12 +453,35 @@ BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
             r = Multiply(r, ten);
             free_BigInt(temp);
             r->d[0] += cur;
+
+            // I thought binary search would be faster,
+            // but ended up being slower as there are only 10 values to search
+            
+            // // Using binary search to find the quotient
+            // int low = 0, high = 10, mid;
+            // quo = 0;
+            // while (low <= high)
+            // {
+            //     mid = (low + high) / 2;
+            //     if (Compare(r, table[mid]) >= 0)
+            //     {
+            //         quo = mid;
+            //         low = mid + 1;
+            //     }
+            //     else
+            //     {
+            //         high = mid - 1;
+            //     }
+            // }
+
+            // Using linear search to find the quotient
             quo = 0;
             while (Compare(r, table[quo]) >= 0)
             {
                 quo++;
             }
             quo--;
+
             temp = q;
             q = Multiply(q, ten);
             free_BigInt(temp);
@@ -946,7 +969,7 @@ Fraction Sqrt(BigInt n)
 
     // print_fraction(nn);
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 2; i++)
     {
         f = multiply_fraction(x, x);
         temp = f;
@@ -1145,7 +1168,7 @@ int main()
 
 
 
-    char *pi = Chudnovsky_algorithm(200);
+    char *pi = Chudnovsky_algorithm(80);
     printf("%s\n", pi);
 
 
