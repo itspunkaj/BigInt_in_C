@@ -2,21 +2,35 @@
 #include <stdlib.h>
 #include <math.h>
 
+
 #define BASE 1000000000000000000ULL; // 1e18
 #define HALFBASE 1000000000ULL
+#define MAX_FACT 10000
+
+unsigned int decimal_precision = 400;
+
 
 struct BigIntStruct
 {
     short int sign;
     unsigned int len;
-    unsigned long long *d;
+    unsigned long long* d;
 };
+
+
+struct FractionStruct
+{
+    struct BigIntStruct* num;
+    struct BigIntStruct* den;
+};
+
 
 struct ComplexStruct
 {
-    float real;
-    float imag;
-} * n1, *n2;
+    long double real;
+    long double imag;
+};
+
 
 typedef struct BigIntStruct *BigInt;
 typedef struct BigIntStruct BigIntObj;
@@ -24,103 +38,87 @@ typedef struct BigIntStruct BigIntObj;
 typedef struct ComplexStruct *Complex;
 typedef struct ComplexStruct ComplexObj;
 
-struct FractionStruct
-{
-    BigInt num;
-    BigInt den;
-};
-
 typedef struct FractionStruct * Fraction;
 typedef struct FractionStruct  FractionObj;
 
 typedef unsigned long long llu;
 typedef long long ll;
 
-
-unsigned int decimal_precision = 400;
-
-
-#define MAX_FACT 10000
 BigInt FACT[MAX_FACT];
 
 
 
+// Function prototypes
+
+int Max(int x, int y);
+int Min(int x, int y);
+
+BigInt new_BigInt(const unsigned int length);
+void set_zero(BigInt b);
+void free_BigInt(BigInt b);
+void print_BigInt(BigInt b);
+BigInt Add(const BigInt a, const BigInt b);
 BigInt Subtract(const BigInt a, const BigInt b);
+void _MUL_(llu x, llu y, llu *carry, llu *result);
+BigInt Multiply(const BigInt a, const BigInt b);
+void Left_Shift(BigInt num, unsigned int shift);
+int Compare(const BigInt a, const BigInt b);
+BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder);
+char* Decimal_Division(BigInt a, BigInt b);
+BigInt Remainder(BigInt a, BigInt b);
 BigInt Power(BigInt num, llu p);
 BigInt GCD(BigInt a, BigInt b);
+BigInt Factorial(llu n);
+void precompute_factorial();
+void Increment(const BigInt a, const BigInt delta);
+void increase_size(BigInt b, const unsigned int delta_len);
+void remove_preceding_zeroes(BigInt a);
+int isPrime(int n);
+int gcd(int a, int b);
+
+Complex new_Complex();
+void print_Complex(Complex a);
+void free_Complex(Complex a);
+long double real_part(Complex a);
+long double imag_part(Complex a);
+Complex conjugate(Complex a);
+long double modulus(Complex a);
+Complex add_Complex(Complex a, Complex b);
+Complex subtract_Complex(Complex a, Complex b);
+Complex multiply_Complex(Complex a, Complex b);
+Complex divide_Complex(Complex a, Complex b);
+
+Fraction new_Fraction();
+Fraction new_Fraction_input();
+void print_Fraction(Fraction a);
+void reduce_Fraction(Fraction a);
+Fraction add_Fraction(Fraction a, Fraction b);
+Fraction subtract_Fraction(Fraction a, Fraction b);
+Fraction multiply_Fraction(Fraction a,Fraction b);
+Fraction divide_Fraction(Fraction a, Fraction b);
+void reciprocal_Fraction(Fraction a);
+void free_Fraction(Fraction a);
+void cancel_zeroes(Fraction a);
+
+// Calculate the square root of a BigInt using Newton Rapson method
+Fraction Sqrt(BigInt n);
+
+char* Chudnovsky_algorithm(int n);
 
 
-Complex new_comp()
+
+int Max(int x, int y)
 {
-    Complex temp;
-    temp = (Complex)malloc(sizeof(ComplexObj));
-
-    return temp;
+    return x > y ? x : y;
 }
 
-float real_part(Complex a)
+int Min(int x, int y)
 {
-    return a->real;
+    return x < y ? x : y;
 }
 
-float imag_part(Complex a)
-{
-    return a->imag;
-}
-Complex conjugate(Complex a)
-{
-    Complex c = new_comp();
-    c->real = a->real;
-    if (a->imag == 0)
-    {
-        c->imag = a->imag;
-    }
-    else
-        c->imag = (-1) * (a->imag);
-    return c;
-}
 
-float modulus(Complex a)
-{
-    return pow(a->real, 2) + pow(a->imag, 2);
-}
-Complex add_Comp(Complex a, Complex b)
-{
-    Complex c;
-    c = new_comp();
-    c->real = (a->real) + (b->real);
-    c->imag = (a->imag) + (b->imag);
-    return c;
-}
 
-Complex subtract_complex(Complex a, Complex b)
-{
-    Complex c;
-    c = new_comp();
-    c->real = a->real - b->real;
-    c->imag = a->imag - (b->imag);
-
-    return c;
-}
-
-Complex multiply_complex(Complex a, Complex b)
-{
-    Complex c = new_comp();
-    c->real = (a->real * b->real) - (a->imag * b->imag);
-    c->imag = (a->real * b->imag) + (a->imag * b->real);
-
-    return c;
-}
-
-Complex divide_complex(Complex a, Complex b)
-{
-    Complex c = new_comp();
-
-    c->real = real_part(multiply_complex(a, conjugate(b))) / modulus(b);
-    c->imag = imag_part(multiply_complex(a, conjugate(b))) / modulus(b);
-
-    return c;
-}
 
 BigInt new_BigInt(const unsigned int length)
 {
@@ -141,23 +139,6 @@ BigInt new_BigInt(const unsigned int length)
     return b;
 }
 
-void print_Comp(Complex a)
-{
-    if (a->imag >= 0)
-        printf("%g + %gi\n", (a->real), (a->imag));
-    else
-        printf("%g - %gi\n", (a->real), -(a->imag));
-}
-
-int Max(int x, int y)
-{
-    return x > y ? x : y;
-}
-
-int Min(int x, int y)
-{
-    return x < y ? x : y;
-}
 
 void set_zero(BigInt b)
 {
@@ -165,11 +146,13 @@ void set_zero(BigInt b)
         b->d[i] = 0;
 }
 
+
 void free_BigInt(BigInt b)
 {
     free(b->d);
     free(b);
 }
+
 
 void print_BigInt(BigInt b)
 {
@@ -187,25 +170,80 @@ void print_BigInt(BigInt b)
     printf("\n");
 }
 
-void increase_size(BigInt b, const unsigned int delta_len)
-{
-    b->d = (llu *)realloc(b->d, sizeof(llu) * (b->len + delta_len));
-    b->len += delta_len;
-    for (int i = b->len - delta_len; i < b->len; i++)
-        b->d[i] = 0;
-}
 
-void remove_preceding_zeroes(BigInt a)
+BigInt take_input() // function to take input from user by string
 {
-    while (a->len > 1 && a->d[a->len - 1] == 0)
+    char *arr;
+    arr = (char *)malloc(2 * sizeof(char));
+    int count = 0;
+    int szalloc = 2;
+    char c = ' ';
+    int sgn = 1;
+    while (c != '\n')
     {
-        a->len--;
+        if (count == szalloc - 1)
+        {
+
+            arr = (char *)realloc(arr, 2 * szalloc * sizeof(char));
+            szalloc *= 2;
+        }
+
+        scanf("%c", &c);
+        if (count == 0)
+        {
+            if (c == '+' || c == '-')
+            {
+                if (c == '-')
+                {
+                    sgn = 0;
+                }
+                continue;
+            }
+        }
+        arr[count] = c;
+
+        count++;
     }
+    // printf("count :%d\n",count);
+    int lenreq = count / 18;
+    if (count % 18 != 0)
+    {
+        lenreq++;
+    }
+    BigInt x = new_BigInt(lenreq);
+    set_zero(x);
+    int j = 0;
+    while (count != 0)
+    {
+        llu tmp = 0;
+        if (count <= 18)
+        {
+            for (int i = 0; i < count - 1; i++)
+            {
+                tmp = 10 * tmp + (arr[i] - '0');
+                // printf("%d ",arr[i]-'0');
+            }
+            x->d[j] = tmp;
+            j++;
+            count = 0;
+            // printf("\ntmp %d \n",arr[3]-'0');
+        }
+        else
+        {
+            for (int i = count - 19; i < count - 1; i++)
+            {
+                tmp = 10 * tmp + (arr[i] - '0');
+            }
+            count -= 18;
+            x->d[j] = tmp;
+            j++;
+        }
+    }
+    x->sign = sgn;
+    return x;
 }
 
-// void increase_size1(BigInt b) {
-//     increase_size(b, b->len);
-// }
+
 BigInt Add(const BigInt a, const BigInt b)
 {
     if (a->sign == 1 && b->sign == 0)
@@ -242,20 +280,6 @@ BigInt Add(const BigInt a, const BigInt b)
     return c;
 }
 
-int isPrime(int n)
-{
-    if (n <= 1)
-        return 0;
-    if (n <= 3)
-        return 1;
-    if (n % 2 == 0 || n % 3 == 0)
-        return 0;
-
-    for (int i = 5; i * i <= n; i = i + 6)
-        if (n % i == 0 || n % (i + 2) == 0)
-            return 0;
-    return 1;
-}
 
 BigInt Subtract(const BigInt a, const BigInt b)
 {
@@ -312,6 +336,7 @@ BigInt Subtract(const BigInt a, const BigInt b)
     return c;
 }
 
+
 void _MUL_(llu x, llu y, llu *carry, llu *result)
 {
     /*
@@ -334,6 +359,7 @@ void _MUL_(llu x, llu y, llu *carry, llu *result)
 
     *result %= BASE;
 }
+
 
 BigInt Multiply(const BigInt a, const BigInt b)
 {
@@ -358,6 +384,7 @@ BigInt Multiply(const BigInt a, const BigInt b)
     remove_preceding_zeroes(c);
     return c;
 }
+
 
 void Left_Shift(BigInt num, unsigned int shift)
 {
@@ -390,6 +417,7 @@ void Left_Shift(BigInt num, unsigned int shift)
     num->len+=shift;
 }
 
+
 int Compare(const BigInt a, const BigInt b)
 {
     BigInt diff = Subtract(a, b);
@@ -412,6 +440,7 @@ int Compare(const BigInt a, const BigInt b)
         return flag;
     }
 }
+
 
 BigInt Divide(const BigInt a, const BigInt b, BigInt* remainder)
 {
@@ -590,12 +619,13 @@ char* Decimal_Division(BigInt a, BigInt b)
 }
 
 
-BigInt Modulo(BigInt a, BigInt b)
+BigInt Remainder(BigInt a, BigInt b)
 {
     BigInt r;
     Divide(a, b, &r);
     return r;
 }
+
 
 BigInt Power(BigInt num, llu p)
 {
@@ -628,20 +658,46 @@ BigInt GCD(BigInt a, BigInt b)
     while (Compare(b, zero) != 0)
     {
         // printf("%d\n", Compare(b, zero));
-        temp = Modulo(a, b);
+        temp = Remainder(a, b);
         a = b;
         b = temp;
     }
     return a;
 }
 
-int gcd(int a, int b) {
-    while (b) {
-        a %= b;
-        // swap(a, b);
+
+BigInt Factorial(llu n)
+{
+    BigInt ans=new_BigInt(1);
+    // setzero(ans);
+    ans->d[0]=1;
+    // set_zero(temp);
+    for(int i=1;i<=n;i++)
+    {
+    BigInt temp=new_BigInt(1);
+    temp->d[0]=i;
+    ans=Multiply(ans,temp);
+
     }
-    return a;
+    return ans;
+
 }
+
+
+void precompute_factorial()
+{
+    FACT[0] = Factorial(1);
+    BigInt n = new_BigInt(1);
+    n->d[0] = 1;
+
+    for (int i = 1; i < MAX_FACT; i++)
+    {
+        FACT[i] = Multiply(FACT[i-1], n);
+        n->d[0]++;
+    }
+    free_BigInt(n);
+}
+
 
 void Increment(const BigInt a, const BigInt delta)
 {
@@ -665,113 +721,156 @@ void Increment(const BigInt a, const BigInt delta)
 }
 
 
-
-BigInt factorial(llu n)
+void increase_size(BigInt b, const unsigned int delta_len)
 {
-    BigInt ans=new_BigInt(1);
-    // setzero(ans);
-    ans->d[0]=1;
-    // set_zero(temp);
-    for(int i=1;i<=n;i++)
-    {
-    BigInt temp=new_BigInt(1);
-    temp->d[0]=i;
-    ans=Multiply(ans,temp);
-
-    }
-    return ans;
-
+    b->d = (llu *)realloc(b->d, sizeof(llu) * (b->len + delta_len));
+    b->len += delta_len;
+    for (int i = b->len - delta_len; i < b->len; i++)
+        b->d[i] = 0;
 }
 
 
-void precompute_factorial()
+void remove_preceding_zeroes(BigInt a)
 {
-    FACT[0] = factorial(1);
-    BigInt n = new_BigInt(1);
-    n->d[0] = 1;
-
-    for (int i = 1; i < MAX_FACT; i++)
+    while (a->len > 1 && a->d[a->len - 1] == 0)
     {
-        FACT[i] = Multiply(FACT[i-1], n);
-        n->d[0]++;
+        a->len--;
     }
-    free_BigInt(n);
 }
 
 
-BigInt take_input() // function to take input from user by string
+int isPrime(int n)
 {
-    char *arr;
-    arr = (char *)malloc(2 * sizeof(char));
-    int count = 0;
-    int szalloc = 2;
-    char c = ' ';
-    int sgn = 1;
-    while (c != '\n')
-    {
-        if (count == szalloc - 1)
-        {
+    if (n <= 1)
+        return 0;
+    if (n <= 3)
+        return 1;
+    if (n % 2 == 0 || n % 3 == 0)
+        return 0;
 
-            arr = (char *)realloc(arr, 2 * szalloc * sizeof(char));
-            szalloc *= 2;
-        }
-
-        scanf("%c", &c);
-        if (count == 0)
-        {
-            if (c == '+' || c == '-')
-            {
-                if (c == '-')
-                {
-                    sgn = 0;
-                }
-                continue;
-            }
-        }
-        arr[count] = c;
-
-        count++;
-    }
-    // printf("count :%d\n",count);
-    int lenreq = count / 18;
-    if (count % 18 != 0)
-    {
-        lenreq++;
-    }
-    BigInt x = new_BigInt(lenreq);
-    set_zero(x);
-    int j = 0;
-    while (count != 0)
-    {
-        llu tmp = 0;
-        if (count <= 18)
-        {
-            for (int i = 0; i < count - 1; i++)
-            {
-                tmp = 10 * tmp + (arr[i] - '0');
-                // printf("%d ",arr[i]-'0');
-            }
-            x->d[j] = tmp;
-            j++;
-            count = 0;
-            // printf("\ntmp %d \n",arr[3]-'0');
-        }
-        else
-        {
-            for (int i = count - 19; i < count - 1; i++)
-            {
-                tmp = 10 * tmp + (arr[i] - '0');
-            }
-            count -= 18;
-            x->d[j] = tmp;
-            j++;
-        }
-    }
-    x->sign = sgn;
-    return x;
+    for (int i = 5; i * i <= n; i = i + 6)
+        if (n % i == 0 || n % (i + 2) == 0)
+            return 0;
+    return 1;
 }
 
-Fraction new_fraction()
+
+int gcd(int a, int b) {
+    while (b) {
+        a %= b;
+        // swap(a, b);
+    }
+    return a;
+}
+
+
+
+
+
+
+Complex new_Complex()
+{
+    Complex temp;
+    temp = (Complex)malloc(sizeof(ComplexObj));
+
+    return temp;
+}
+
+
+void print_Complex(Complex a)
+{
+    if (a->imag >= 0)
+        printf("%g + %gi\n", (a->real), (a->imag));
+    else
+        printf("%g - %gi\n", (a->real), -(a->imag));
+}
+
+
+void free_Complex(Complex a)
+{
+    free(a);
+}
+
+
+long double real_part(Complex a)
+{
+    return a->real;
+}
+
+
+long double imag_part(Complex a)
+{
+    return a->imag;
+}
+
+
+Complex conjugate(Complex a)
+{
+    Complex c = new_Complex();
+    c->real = a->real;
+    if (a->imag == 0)
+    {
+        c->imag = a->imag;
+    }
+    else
+        c->imag = (-1) * (a->imag);
+    return c;
+}
+
+
+long double modulus(Complex a)
+{
+    return pow(a->real, 2) + pow(a->imag, 2);
+}
+
+
+Complex add_Complex(Complex a, Complex b)
+{
+    Complex c;
+    c = new_Complex();
+    c->real = (a->real) + (b->real);
+    c->imag = (a->imag) + (b->imag);
+    return c;
+}
+
+
+Complex subtract_Complex(Complex a, Complex b)
+{
+    Complex c;
+    c = new_Complex();
+    c->real = a->real - b->real;
+    c->imag = a->imag - (b->imag);
+
+    return c;
+}
+
+
+Complex multiply_Complex(Complex a, Complex b)
+{
+    Complex c = new_Complex();
+    c->real = (a->real * b->real) - (a->imag * b->imag);
+    c->imag = (a->real * b->imag) + (a->imag * b->real);
+
+    return c;
+}
+
+
+Complex divide_Complex(Complex a, Complex b)
+{
+    Complex c = new_Complex();
+
+    c->real = real_part(multiply_Complex(a, conjugate(b))) / modulus(b);
+    c->imag = imag_part(multiply_Complex(a, conjugate(b))) / modulus(b);
+
+    return c;
+}
+
+
+
+
+
+
+Fraction new_Fraction()
 {
     Fraction c;
     c=(Fraction)malloc(sizeof(FractionObj));
@@ -779,7 +878,9 @@ Fraction new_fraction()
     // c->den=new_BigInt(1);
     return c;
 }
-Fraction new_fraction_input()
+
+
+Fraction new_Fraction_input()
 {
     Fraction c;
     BigInt a=take_input();
@@ -794,7 +895,8 @@ Fraction new_fraction_input()
 
 }
 
-void print_fraction(Fraction a)
+
+void print_Fraction(Fraction a)
 {
     printf("Numerator :  ");
     print_BigInt(a->num);
@@ -802,7 +904,8 @@ void print_fraction(Fraction a)
     print_BigInt(a->den);
 }
 
-void reduce_fraction(Fraction a)
+
+void reduce_Fraction(Fraction a)
 {
     BigInt g = GCD(a->num, a->den);
     remove_preceding_zeroes(g);
@@ -815,9 +918,10 @@ void reduce_fraction(Fraction a)
     a->den = Divide(a->den, g, &rem);
 }
 
-Fraction add_fraction(Fraction a, Fraction b)
+
+Fraction add_Fraction(Fraction a, Fraction b)
 {
-    Fraction c = new_fraction();
+    Fraction c = new_Fraction();
     c->num =Add(Multiply(a->num,b->den),Multiply(a->den,b->num));
     c->den=Multiply(a->den,b->den);
 
@@ -837,14 +941,15 @@ Fraction add_fraction(Fraction a, Fraction b)
     // free_BigInt(g);
     // free_BigInt(rem);
 
-    // reduce_fraction(c);
+    // reduce_Fraction(c);
 
     return c;
 }
 
-Fraction subtract_fraction(Fraction a, Fraction b)
+
+Fraction subtract_Fraction(Fraction a, Fraction b)
 {
-    Fraction c = new_fraction();
+    Fraction c = new_Fraction();
     c->num=Subtract(Multiply(a->num,b->den),Multiply(a->den,b->num));
     c->den=Multiply(a->den,b->den);
 
@@ -864,42 +969,46 @@ Fraction subtract_fraction(Fraction a, Fraction b)
     // free_BigInt(g);
     // free_BigInt(rem);
 
-    // reduce_fraction(c);
+    // reduce_Fraction(c);
 
     return c;
 }
 
-Fraction multiply_fraction(Fraction a,Fraction b)
+
+Fraction multiply_Fraction(Fraction a,Fraction b)
 {
-    Fraction c = new_fraction();
+    Fraction c = new_Fraction();
     c->num = Multiply(a->num,b->num);
     c->den = Multiply(a->den,b->den);
 
-    // reduce_fraction(c);
+    // reduce_Fraction(c);
 
     return c;
     
 }
 
-Fraction divide_fraction(Fraction a, Fraction b)
+
+Fraction divide_Fraction(Fraction a, Fraction b)
 {
-    Fraction c = new_fraction();
+    Fraction c = new_Fraction();
     c->num = Multiply(a->num,b->den);
     c->den = Multiply(a->den,b->num);
 
-    // reduce_fraction(c);
+    // reduce_Fraction(c);
 
     return c;
 }
 
-void reciprocal_fraction(Fraction a)
+
+void reciprocal_Fraction(Fraction a)
 {
     BigInt temp=a->num;
     a->num=a->den;
     a->den=temp;
 }
 
-void free_fraction(Fraction a)
+
+void free_Fraction(Fraction a)
 {
     free_BigInt(a->num);
     free_BigInt(a->den);
@@ -927,11 +1036,15 @@ void cancel_zeroes(Fraction a)
     a->den->len -= cnt;
 }
 
+
+
+
+
 Fraction Sqrt(BigInt n)
 {
     // Calculate the square root of a BigInt using Newton Rapson method
     
-    Fraction x = new_fraction();
+    Fraction x = new_Fraction();
     // free_BigInt(x->num);
     
     // x->num = new_BigInt(1);
@@ -956,53 +1069,53 @@ Fraction Sqrt(BigInt n)
     x->den->d[3] = 1412661ULL;
     
     Fraction temp, temp1, f, df;
-    Fraction two = new_fraction();
+    Fraction two = new_Fraction();
     two->num = new_BigInt(1);
     two->den = new_BigInt(1);
     two->num->d[0] = 2;
     two->den->d[0] = 1;
     
-    Fraction nn = new_fraction();
+    Fraction nn = new_Fraction();
     nn->den = new_BigInt(1);
     nn->num = n;
     nn->den->d[0] = 1;
 
-    // print_fraction(nn);
+    // print_Fraction(nn);
 
     for (int i = 0; i < 2; i++)
     {
-        f = multiply_fraction(x, x);
+        f = multiply_Fraction(x, x);
         temp = f;
-        f = subtract_fraction(f, nn);
-        // free_fraction(temp);
-        df = multiply_fraction(x, two);
-        temp = divide_fraction(f, df);
+        f = subtract_Fraction(f, nn);
+        // free_Fraction(temp);
+        df = multiply_Fraction(x, two);
+        temp = divide_Fraction(f, df);
         temp1 = x;
-        x = subtract_fraction(x, temp);
-        // free_fraction(temp);
-        // free_fraction(temp1);
-        // free_fraction(df);
-        // free_fraction(f);
+        x = subtract_Fraction(x, temp);
+        // free_Fraction(temp);
+        // free_Fraction(temp1);
+        // free_Fraction(df);
+        // free_Fraction(f);
 
         cancel_zeroes(x);
-        reduce_fraction(x);
+        reduce_Fraction(x);
         
-        // f = multiply_fraction(x, x);
+        // f = multiply_Fraction(x, x);
         // temp = f;
-        // f = subtract_fraction(f, nn);
-        // free_fraction(temp);
-        // df = multiply_fraction(x, two);
-        // temp = divide_fraction(f, df);
+        // f = subtract_Fraction(f, nn);
+        // free_Fraction(temp);
+        // df = multiply_Fraction(x, two);
+        // temp = divide_Fraction(f, df);
         // temp1 = x;
-        // x = subtract_fraction(x, temp);
-        // free_fraction(temp);
-        // free_fraction(temp1);
-        // free_fraction(df);
-        // free_fraction(f);
+        // x = subtract_Fraction(x, temp);
+        // free_Fraction(temp);
+        // free_Fraction(temp1);
+        // free_Fraction(df);
+        // free_Fraction(f);
 
 
     }
-    // reduce_fraction(x);
+    // reduce_Fraction(x);
     return x;
 }
 
@@ -1023,7 +1136,7 @@ char* Chudnovsky_algorithm(int n)
     BigInt dL = new_BigInt(1);
     BigInt X = new_BigInt(1);
     BigInt dX = new_BigInt(1);
-    Fraction M = new_fraction();
+    Fraction M = new_Fraction();
     M->num = new_BigInt(1);
     M->den = new_BigInt(1);
 
@@ -1035,10 +1148,10 @@ char* Chudnovsky_algorithm(int n)
     M->num->d[0] = 1;
     M->den->d[0] = 1;
 
-    Fraction temp = new_fraction();
-    Fraction T = new_fraction();
-    Fraction SUM0 = new_fraction();
-    Fraction SUM1 = new_fraction();
+    Fraction temp = new_Fraction();
+    Fraction T = new_Fraction();
+    Fraction SUM0 = new_Fraction();
+    Fraction SUM1 = new_Fraction();
     SUM0->num = new_BigInt(1);
     SUM0->den = new_BigInt(1);
     SUM1->num = new_BigInt(1);
@@ -1046,7 +1159,7 @@ char* Chudnovsky_algorithm(int n)
     
     T->num = L;
     T->den = X;
-    T = multiply_fraction(T, M);
+    T = multiply_Fraction(T, M);
     SUM0->num = L;
     SUM0->den = X;
     SUM1->num->d[0] = 0;
@@ -1056,7 +1169,7 @@ char* Chudnovsky_algorithm(int n)
     BigInt _10005 = new_BigInt(1);
     _10005->d[0] = 10005;
     Fraction sqrt_10005 = Sqrt(_10005);
-    // print_fraction(sqrt_10005);
+    // print_Fraction(sqrt_10005);
     printf("sqrt(10005) computed\n");
 
     printf("Computing term    ");
@@ -1078,63 +1191,63 @@ char* Chudnovsky_algorithm(int n)
 
         T->num = L;
         T->den = X;
-        T = multiply_fraction(T, M);
+        T = multiply_Fraction(T, M);
 
         if (i % 2 == 0)
         {
             temp = SUM0;
-            SUM0 = add_fraction(SUM0, T);
+            SUM0 = add_Fraction(SUM0, T);
             cancel_zeroes(SUM0);
-            // if (i % 50 == 0) reduce_fraction(SUM0);
-            // free_fraction(temp);
+            // if (i % 50 == 0) reduce_Fraction(SUM0);
+            // free_Fraction(temp);
         }
         else
         {
             temp = SUM1;
-            SUM1 = add_fraction(SUM1, T);
+            SUM1 = add_Fraction(SUM1, T);
             cancel_zeroes(SUM1);
-            // if (i % 50 == 0) reduce_fraction(SUM1);
-            // free_fraction(temp);
+            // if (i % 50 == 0) reduce_Fraction(SUM1);
+            // free_Fraction(temp);
         }
 
-        // SUM = add_fraction(SUM, T);
+        // SUM = add_Fraction(SUM, T);
         cancel_zeroes(M);
-        // reduce_fraction(M);
+        // reduce_Fraction(M);
     }
 
     printf("... Done!\nCalculating SUM of terms...\n");
 
     // printf("\nSUM0 = \n");
-    // print_fraction(SUM0);
+    // print_Fraction(SUM0);
 
     // printf("\nSUM1 = \n");
-    // print_fraction(SUM1);
+    // print_Fraction(SUM1);
 
-    Fraction SUM = subtract_fraction(SUM0, SUM1);
+    Fraction SUM = subtract_Fraction(SUM0, SUM1);
 
     printf("SUM of terms calculated\n");
 
     // printf("\nSUM = \n");
-    // print_fraction(SUM);
+    // print_Fraction(SUM);
 
     // printf("\n");
 
-    reciprocal_fraction(SUM);
+    reciprocal_Fraction(SUM);
     cancel_zeroes(SUM);
-    // reduce_fraction(SUM);
+    // reduce_Fraction(SUM);
 
-    // print_fraction(SUM);
+    // print_Fraction(SUM);
 
-    Fraction PI = multiply_fraction(SUM, sqrt_10005);
+    Fraction PI = multiply_Fraction(SUM, sqrt_10005);
     PI->num = Multiply(PI->num, c);
     // PI->num->sign = 1;
     // PI->den->sign = 1;
 
     cancel_zeroes(PI);
 
-    // reduce_fraction(PI);
+    // reduce_Fraction(PI);
 
-    // print_fraction(PI);
+    // print_Fraction(PI);
 
     printf("Now computing decimal value of PI...\n");
 
@@ -1152,7 +1265,7 @@ int main()
     
     // BigInt x = new_BigInt(1);
     // x->d[0] = 10005;
-    // print_fraction(Sqrt(x));
+    // print_Fraction(Sqrt(x));
     
     // BigInt y = take_input();
     // print_BigInt(y);
@@ -1160,7 +1273,7 @@ int main()
     // print_BigInt(z);
 
     // Fraction ans = Sqrt(x);
-    // print_fraction(ans);
+    // print_Fraction(ans);
 
 
     // char *ans = Decimal_Division(y, z);
@@ -1168,7 +1281,7 @@ int main()
 
 
 
-    char *pi = Chudnovsky_algorithm(80);
+    char *pi = Chudnovsky_algorithm(50);
     printf("%s\n", pi);
 
 
