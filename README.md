@@ -4,9 +4,9 @@ Project Title : BIGINT & Calculation of PI ||
 Instructor : Dr. Anil Shukla || 
 Mentor : Avadhesh Gaur
 
-Anant Prakash Singh -2021CSB1066  
-Kartik Yadav -2021CSB1101  
-Aditya Kumar Sahu -2021MCB1228
+Anant Prakash Singh - 2021CSB1066  
+Pankaj Singh - 2021CEB1026
+Aditya Kumar Sahu - 2021MCB1228
  
  -------------------------------------------------------------------------------------
 
